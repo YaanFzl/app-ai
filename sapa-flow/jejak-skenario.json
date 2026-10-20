@@ -1,0 +1,1387 @@
+[
+ {
+  "id": "lancar",
+  "judul": "Kontrol rutin, lancar",
+  "ringkas": "Ibu lansia, semua langkah berhasil pada percobaan pertama; sudah punya RM, jadi diarahkan ke poli.",
+  "hasil": "antrean_dicetak",
+  "frames": [
+   {
+    "peristiwa": "Pasien berdiri di depan kios",
+    "keadaan": "TANYA_MODE",
+    "ucapan": "Selamat datang, Bapak/Ibu. Saya Sapa, pemandu pendaftaran. Hari ini pakai BPJS, sudah punya kode booking dari Mobile JKN, atau bukan BPJS?",
+    "subtitle": "Pakai BPJS, kode booking Mobile JKN, atau bukan BPJS?",
+    "ekspresi": "menyapa",
+    "tempo": 0.85,
+    "kartu": null,
+    "efek": [],
+    "jejak": null
+   },
+   {
+    "peristiwa": "Pasien: “pakai BPJS”",
+    "keadaan": "SAPA_IZIN",
+    "ucapan": "Baik. Data Bapak/Ibu akan dipakai untuk pendaftaran hari ini. Boleh saya lanjutkan?",
+    "subtitle": "Data dipakai untuk daftar hari ini. Boleh? Ya / tidak",
+    "ekspresi": "mendengar",
+    "tempo": 0.85,
+    "kartu": null,
+    "efek": [
+     "audit: jawaban mode → pasti via jev"
+    ],
+    "jejak": {
+     "jev": {
+      "opsi": "bpjs",
+      "keyakinan": 0.94,
+      "pMintaPetugas": 0.02,
+      "pDarurat": 0.01
+     }
+    }
+   },
+   {
+    "peristiwa": "Pasien: “iya, boleh”",
+    "keadaan": "MINTA_KARTU",
+    "ucapan": "Terima kasih. Silakan letakkan kartu BPJS atau KTP di kotak yang menyala.",
+    "subtitle": "Letakkan kartu BPJS / KTP di kotak yang menyala",
+    "ekspresi": "memandu",
+    "tempo": 0.9,
+    "kartu": null,
+    "efek": [
+     "audit: jawaban izin → pasti via jev",
+     "audit: izin diberikan (bercap waktu)",
+     "lampu pemindai menyala"
+    ],
+    "jejak": {
+     "jev": {
+      "opsi": "ya",
+      "keyakinan": 0.93,
+      "pMintaPetugas": 0.02,
+      "pDarurat": 0.01
+     }
+    }
+   },
+   {
+    "peristiwa": "Kartu JKN dipindai (RM ada di SIMRS)",
+    "keadaan": "VERIFIKASI_WAJAH",
+    "ucapan": "Terima kasih, Ibu. Sekarang lihat ke kamera di atas layar, ya.",
+    "subtitle": "Lihat ke kamera di atas layar",
+    "ekspresi": "memandu",
+    "tempo": 0.9,
+    "kartu": null,
+    "efek": [
+     "lampu pemindai padam",
+     "lampu wajah menyala",
+     "OBSBOT: bingkai wajah otomatis"
+    ],
+    "jejak": null
+   },
+   {
+    "peristiwa": "FRISTA 1:1: cocok",
+    "keadaan": "TANYA_KUNJUNGAN",
+    "ucapan": "Wajah sudah cocok, terima kasih. Hari ini Ibu mau kontrol, atau membawa rujukan baru?",
+    "subtitle": "Kontrol, atau bawa rujukan baru?",
+    "ekspresi": "mendengar",
+    "tempo": 0.9,
+    "kartu": null,
+    "efek": [
+     "audit: FRISTA cocok (percobaan 1)",
+     "lampu wajah padam"
+    ],
+    "jejak": null
+   },
+   {
+    "peristiwa": "Pasien: “kontrol rutin, Nak, tiap bulan”",
+    "keadaan": "SCAN_DOKUMEN",
+    "ucapan": "Silakan letakkan surat kontrol di kotak yang menyala.",
+    "subtitle": "Letakkan surat kontrol di kotak yang menyala",
+    "ekspresi": "memandu",
+    "tempo": 0.9,
+    "kartu": null,
+    "efek": [
+     "audit: jawaban kunjungan → pasti via jev",
+     "lampu pemindai menyala"
+    ],
+    "jejak": {
+     "jev": {
+      "opsi": "kontrol",
+      "keyakinan": 0.9,
+      "pMintaPetugas": 0.02,
+      "pDarurat": 0.01
+     }
+    }
+   },
+   {
+    "peristiwa": "Surat kontrol dipindai",
+    "keadaan": "KONFIRMASI_DATA",
+    "ucapan": "Data kunjungan Ibu ada di layar. Sudah betul?",
+    "subtitle": "Data di layar sudah betul? Jawab: ya / tidak",
+    "ekspresi": "mendengar",
+    "tempo": 0.9,
+    "kartu": {
+     "judul": "Data kunjungan hari ini",
+     "baris": [
+      {
+       "label": "Nama",
+       "nilai": "Siti Aminah",
+       "ragu": false
+      },
+      {
+       "label": "Tanggal lahir",
+       "nilai": "1955-01-01",
+       "ragu": false
+      },
+      {
+       "label": "Kunjungan",
+       "nilai": "Kontrol",
+       "ragu": false
+      },
+      {
+       "label": "Poli tujuan",
+       "nilai": "penyakit dalam",
+       "ragu": false
+      },
+      {
+       "label": "Rujukan berlaku s.d.",
+       "nilai": "2026-12-31",
+       "ragu": false
+      }
+     ]
+    },
+    "efek": [
+     "lampu pemindai padam"
+    ],
+    "jejak": null
+   },
+   {
+    "peristiwa": "Pasien: “sudah, sudah bener”",
+    "keadaan": "MENUNGGU_PETUGAS_CEK",
+    "ucapan": "Terima kasih. Petugas sedang memeriksa sebentar, ya.",
+    "subtitle": "Petugas sedang memeriksa sebentar…",
+    "ekspresi": "senang",
+    "tempo": 0.9,
+    "kartu": {
+     "judul": "Data kunjungan hari ini",
+     "baris": [
+      {
+       "label": "Nama",
+       "nilai": "Siti Aminah",
+       "ragu": false
+      },
+      {
+       "label": "Tanggal lahir",
+       "nilai": "1955-01-01",
+       "ragu": false
+      },
+      {
+       "label": "Kunjungan",
+       "nilai": "Kontrol",
+       "ragu": false
+      },
+      {
+       "label": "Poli tujuan",
+       "nilai": "penyakit dalam",
+       "ragu": false
+      },
+      {
+       "label": "Rujukan berlaku s.d.",
+       "nilai": "2026-12-31",
+       "ragu": false
+      }
+     ]
+    },
+    "efek": [
+     "audit: jawaban konfirmasi → pasti via jev",
+     "draf ke dashboard petugas"
+    ],
+    "jejak": {
+     "jev": {
+      "opsi": "ya",
+      "keyakinan": 0.94,
+      "pMintaPetugas": 0.02,
+      "pDarurat": 0.01
+     }
+    }
+   },
+   {
+    "peristiwa": "Petugas menyetujui di dashboard (nomor antrean dari sistem petugas)",
+    "keadaan": "SELESAI",
+    "ucapan": "Ini nomor antrean Ibu. Silakan menuju poli, petunjuknya ada di layar. Semoga lekas sehat.",
+    "subtitle": "Nomor antrean di layar. Silakan ke poli. Lekas sehat!",
+    "ekspresi": "senang",
+    "tempo": 0.9,
+    "kartu": null,
+    "efek": [
+     "audit: petugas setuju",
+     "tampilkan nomor antrean PD-017 · arahan ke poli"
+    ],
+    "jejak": null
+   }
+  ]
+ },
+ {
+  "id": "checkin",
+  "judul": "Check-in kode booking",
+  "ringkas": "Pasien sudah ambil antrean di Mobile JKN. Kode dipindai dari layar HP, wajah tetap diverifikasi, data dari booking.",
+  "hasil": "antrean_dicetak",
+  "frames": [
+   {
+    "peristiwa": "Pasien berdiri di depan kios",
+    "keadaan": "TANYA_MODE",
+    "ucapan": "Selamat datang, Bapak/Ibu. Saya Sapa, pemandu pendaftaran. Hari ini pakai BPJS, sudah punya kode booking dari Mobile JKN, atau bukan BPJS?",
+    "subtitle": "Pakai BPJS, kode booking Mobile JKN, atau bukan BPJS?",
+    "ekspresi": "menyapa",
+    "tempo": 0.85,
+    "kartu": null,
+    "efek": [],
+    "jejak": null
+   },
+   {
+    "peristiwa": "Pasien: “sudah booking di Mobile JKN”",
+    "keadaan": "SAPA_IZIN",
+    "ucapan": "Baik. Data Bapak/Ibu akan dipakai untuk pendaftaran hari ini. Boleh saya lanjutkan?",
+    "subtitle": "Data dipakai untuk daftar hari ini. Boleh? Ya / tidak",
+    "ekspresi": "mendengar",
+    "tempo": 0.85,
+    "kartu": null,
+    "efek": [
+     "audit: jawaban mode → pasti via jev"
+    ],
+    "jejak": {
+     "jev": {
+      "opsi": "checkin",
+      "keyakinan": 0.9,
+      "pMintaPetugas": 0.02,
+      "pDarurat": 0.01
+     }
+    }
+   },
+   {
+    "peristiwa": "Pasien: “iya, boleh”",
+    "keadaan": "MINTA_KODE_BOOKING",
+    "ucapan": "Terima kasih. Silakan buka kode booking di aplikasi Mobile JKN, lalu tunjukkan layar HP ke kotak yang menyala.",
+    "subtitle": "Tunjukkan kode booking Mobile JKN ke kotak menyala",
+    "ekspresi": "memandu",
+    "tempo": 0.9,
+    "kartu": null,
+    "efek": [
+     "audit: jawaban izin → pasti via jev",
+     "audit: izin diberikan (bercap waktu)",
+     "lampu pemindai menyala"
+    ],
+    "jejak": {
+     "jev": {
+      "opsi": "ya",
+      "keyakinan": 0.93,
+      "pMintaPetugas": 0.02,
+      "pDarurat": 0.01
+     }
+    }
+   },
+   {
+    "peristiwa": "Kode booking dipindai dari layar HP",
+    "keadaan": "VERIFIKASI_WAJAH",
+    "ucapan": "Terima kasih, Ibu. Sekarang lihat ke kamera di atas layar, ya.",
+    "subtitle": "Lihat ke kamera di atas layar",
+    "ekspresi": "memandu",
+    "tempo": 0.9,
+    "kartu": null,
+    "efek": [
+     "lampu pemindai padam",
+     "lampu wajah menyala",
+     "OBSBOT: bingkai wajah otomatis"
+    ],
+    "jejak": null
+   },
+   {
+    "peristiwa": "FRISTA 1:1: cocok",
+    "keadaan": "KONFIRMASI_DATA",
+    "ucapan": "Data kunjungan Ibu ada di layar. Sudah betul?",
+    "subtitle": "Data di layar sudah betul? Jawab: ya / tidak",
+    "ekspresi": "mendengar",
+    "tempo": 0.9,
+    "kartu": {
+     "judul": "Data kunjungan hari ini",
+     "baris": [
+      {
+       "label": "Nama",
+       "nilai": "Siti Aminah",
+       "ragu": false
+      },
+      {
+       "label": "Tanggal lahir",
+       "nilai": "1955-01-01",
+       "ragu": false
+      },
+      {
+       "label": "Kunjungan",
+       "nilai": "Check-in Mobile JKN",
+       "ragu": false
+      },
+      {
+       "label": "Poli tujuan",
+       "nilai": "penyakit dalam",
+       "ragu": false
+      },
+      {
+       "label": "Jam praktik",
+       "nilai": "08:00-12:00",
+       "ragu": false
+      }
+     ]
+    },
+    "efek": [
+     "audit: FRISTA cocok (percobaan 1)",
+     "lampu wajah padam",
+     "lampu pemindai padam"
+    ],
+    "jejak": null
+   },
+   {
+    "peristiwa": "Pasien: “sudah, sudah bener”",
+    "keadaan": "MENUNGGU_PETUGAS_CEK",
+    "ucapan": "Terima kasih. Petugas sedang memeriksa sebentar, ya.",
+    "subtitle": "Petugas sedang memeriksa sebentar…",
+    "ekspresi": "senang",
+    "tempo": 0.9,
+    "kartu": {
+     "judul": "Data kunjungan hari ini",
+     "baris": [
+      {
+       "label": "Nama",
+       "nilai": "Siti Aminah",
+       "ragu": false
+      },
+      {
+       "label": "Tanggal lahir",
+       "nilai": "1955-01-01",
+       "ragu": false
+      },
+      {
+       "label": "Kunjungan",
+       "nilai": "Check-in Mobile JKN",
+       "ragu": false
+      },
+      {
+       "label": "Poli tujuan",
+       "nilai": "penyakit dalam",
+       "ragu": false
+      },
+      {
+       "label": "Jam praktik",
+       "nilai": "08:00-12:00",
+       "ragu": false
+      }
+     ]
+    },
+    "efek": [
+     "audit: jawaban konfirmasi → pasti via jev",
+     "draf ke dashboard petugas"
+    ],
+    "jejak": {
+     "jev": {
+      "opsi": "ya",
+      "keyakinan": 0.94,
+      "pMintaPetugas": 0.02,
+      "pDarurat": 0.01
+     }
+    }
+   },
+   {
+    "peristiwa": "Petugas menyetujui di dashboard (nomor antrean dari sistem petugas)",
+    "keadaan": "SELESAI",
+    "ucapan": "Ini nomor antrean Ibu. Silakan menuju poli, petunjuknya ada di layar. Semoga lekas sehat.",
+    "subtitle": "Nomor antrean di layar. Silakan ke poli. Lekas sehat!",
+    "ekspresi": "senang",
+    "tempo": 0.9,
+    "kartu": null,
+    "efek": [
+     "audit: petugas setuju",
+     "tampilkan nomor antrean PD-017 · arahan ke poli"
+    ],
+    "jejak": null
+   }
+  ]
+ },
+ {
+  "id": "wajah",
+  "judul": "Wajah sulit terbaca",
+  "ringkas": "Ruang gelap lalu terlalu jauh; kios memandu. Rujukan menulis “Achmad Sudjono” (dianggap ejaan lain, aman) tapi sudah kedaluwarsa, jadi ditandai.",
+  "hasil": "dilayani_petugas",
+  "frames": [
+   {
+    "peristiwa": "Pasien berdiri di depan kios",
+    "keadaan": "TANYA_MODE",
+    "ucapan": "Selamat datang, Bapak/Ibu. Saya Sapa, pemandu pendaftaran. Hari ini pakai BPJS, sudah punya kode booking dari Mobile JKN, atau bukan BPJS?",
+    "subtitle": "Pakai BPJS, kode booking Mobile JKN, atau bukan BPJS?",
+    "ekspresi": "menyapa",
+    "tempo": 0.85,
+    "kartu": null,
+    "efek": [],
+    "jejak": null
+   },
+   {
+    "peristiwa": "Pasien: “pakai BPJS”",
+    "keadaan": "SAPA_IZIN",
+    "ucapan": "Baik. Data Bapak/Ibu akan dipakai untuk pendaftaran hari ini. Boleh saya lanjutkan?",
+    "subtitle": "Data dipakai untuk daftar hari ini. Boleh? Ya / tidak",
+    "ekspresi": "mendengar",
+    "tempo": 0.85,
+    "kartu": null,
+    "efek": [
+     "audit: jawaban mode → pasti via jev"
+    ],
+    "jejak": {
+     "jev": {
+      "opsi": "bpjs",
+      "keyakinan": 0.94,
+      "pMintaPetugas": 0.02,
+      "pDarurat": 0.01
+     }
+    }
+   },
+   {
+    "peristiwa": "Pasien: “nggih, monggo”",
+    "keadaan": "MINTA_KARTU",
+    "ucapan": "Terima kasih. Silakan letakkan kartu BPJS atau KTP di kotak yang menyala.",
+    "subtitle": "Letakkan kartu BPJS / KTP di kotak yang menyala",
+    "ekspresi": "memandu",
+    "tempo": 0.9,
+    "kartu": null,
+    "efek": [
+     "audit: jawaban izin → pasti via jev",
+     "audit: izin diberikan (bercap waktu)",
+     "lampu pemindai menyala"
+    ],
+    "jejak": {
+     "jev": {
+      "opsi": "ya",
+      "keyakinan": 0.88,
+      "pMintaPetugas": 0.02,
+      "pDarurat": 0.01
+     }
+    }
+   },
+   {
+    "peristiwa": "KTP dipindai (belum punya RM)",
+    "keadaan": "VERIFIKASI_WAJAH",
+    "ucapan": "Terima kasih, Bapak. Sekarang lihat ke kamera di atas layar, ya.",
+    "subtitle": "Lihat ke kamera di atas layar",
+    "ekspresi": "memandu",
+    "tempo": 0.9,
+    "kartu": null,
+    "efek": [
+     "lampu pemindai padam",
+     "lampu wajah menyala",
+     "OBSBOT: bingkai wajah otomatis"
+    ],
+    "jejak": null
+   },
+   {
+    "peristiwa": "FRISTA: wajah tak terdeteksi (gelap)",
+    "keadaan": "VERIFIKASI_WAJAH",
+    "ucapan": "Saya terangkan lampunya. Lihat ke kamera sekali lagi, ya.",
+    "subtitle": "Lampu diterangkan. Lihat ke kamera lagi",
+    "ekspresi": "memandu",
+    "tempo": 0.85,
+    "kartu": null,
+    "efek": [
+     "audit: FRISTA wajah tidak terdeteksi (percobaan 1)",
+     "lampu pemindai padam",
+     "lampu wajah menyala",
+     "OBSBOT: naikkan eksposur"
+    ],
+    "jejak": null
+   },
+   {
+    "peristiwa": "FRISTA: wajah tak terdeteksi (terlalu jauh)",
+    "keadaan": "VERIFIKASI_WAJAH",
+    "ucapan": "Sedikit maju, Bapak. Ya, begitu. Tahan sebentar.",
+    "subtitle": "Sedikit maju… tahan sebentar",
+    "ekspresi": "memandu",
+    "tempo": 0.85,
+    "kartu": null,
+    "efek": [
+     "audit: FRISTA wajah tidak terdeteksi (percobaan 2)",
+     "lampu pemindai padam",
+     "lampu wajah menyala",
+     "OBSBOT: bingkai wajah otomatis"
+    ],
+    "jejak": null
+   },
+   {
+    "peristiwa": "FRISTA 1:1: cocok",
+    "keadaan": "TANYA_KUNJUNGAN",
+    "ucapan": "Wajah sudah cocok, terima kasih. Hari ini Bapak mau kontrol, atau membawa rujukan baru?",
+    "subtitle": "Kontrol, atau bawa rujukan baru?",
+    "ekspresi": "mendengar",
+    "tempo": 0.9,
+    "kartu": null,
+    "efek": [
+     "audit: FRISTA cocok (percobaan 3)",
+     "lampu wajah padam"
+    ],
+    "jejak": null
+   },
+   {
+    "peristiwa": "Pasien: “bawa surat dari puskesmas”",
+    "keadaan": "SCAN_DOKUMEN",
+    "ucapan": "Silakan letakkan surat rujukan dari puskesmas atau klinik di kotak yang menyala.",
+    "subtitle": "Letakkan surat rujukan di kotak yang menyala",
+    "ekspresi": "memandu",
+    "tempo": 0.9,
+    "kartu": null,
+    "efek": [
+     "audit: jawaban kunjungan → pasti via jev",
+     "lampu pemindai menyala"
+    ],
+    "jejak": {
+     "jev": {
+      "opsi": "rujukan_baru",
+      "keyakinan": 0.91,
+      "pMintaPetugas": 0.02,
+      "pDarurat": 0.01
+     }
+    }
+   },
+   {
+    "peristiwa": "Rujukan dipindai (ejaan nama lain, berlaku s.d. 1 Okt)",
+    "keadaan": "KONFIRMASI_DATA",
+    "ucapan": "Data kunjungan Bapak ada di layar. Sudah betul?",
+    "subtitle": "Data di layar sudah betul? Jawab: ya / tidak",
+    "ekspresi": "mendengar",
+    "tempo": 0.9,
+    "kartu": {
+     "judul": "Data kunjungan hari ini",
+     "baris": [
+      {
+       "label": "Nama",
+       "nilai": "Ahmad Sujono",
+       "ragu": false
+      },
+      {
+       "label": "Tanggal lahir",
+       "nilai": "1948-02-02",
+       "ragu": false
+      },
+      {
+       "label": "Kunjungan",
+       "nilai": "Rujukan baru",
+       "ragu": false
+      },
+      {
+       "label": "Poli tujuan",
+       "nilai": "penyakit dalam",
+       "ragu": false
+      },
+      {
+       "label": "Rujukan berlaku s.d.",
+       "nilai": "2026-10-01",
+       "ragu": true
+      }
+     ]
+    },
+    "efek": [
+     "audit: bendera rujukan_kedaluwarsa",
+     "lampu pemindai padam"
+    ],
+    "jejak": null
+   },
+   {
+    "peristiwa": "Pasien: “sudah, sudah bener”",
+    "keadaan": "MENUNGGU_PETUGAS_CEK",
+    "ucapan": "Terima kasih. Petugas sedang memeriksa sebentar, ya.",
+    "subtitle": "Petugas sedang memeriksa sebentar…",
+    "ekspresi": "senang",
+    "tempo": 0.9,
+    "kartu": {
+     "judul": "Data kunjungan hari ini",
+     "baris": [
+      {
+       "label": "Nama",
+       "nilai": "Ahmad Sujono",
+       "ragu": false
+      },
+      {
+       "label": "Tanggal lahir",
+       "nilai": "1948-02-02",
+       "ragu": false
+      },
+      {
+       "label": "Kunjungan",
+       "nilai": "Rujukan baru",
+       "ragu": false
+      },
+      {
+       "label": "Poli tujuan",
+       "nilai": "penyakit dalam",
+       "ragu": false
+      },
+      {
+       "label": "Rujukan berlaku s.d.",
+       "nilai": "2026-10-01",
+       "ragu": true
+      }
+     ]
+    },
+    "efek": [
+     "audit: jawaban konfirmasi → pasti via jev",
+     "draf ke dashboard petugas · 1 bendera"
+    ],
+    "jejak": {
+     "jev": {
+      "opsi": "ya",
+      "keyakinan": 0.94,
+      "pMintaPetugas": 0.02,
+      "pDarurat": 0.01
+     }
+    }
+   },
+   {
+    "peristiwa": "Petugas memeriksa bendera, lalu mengambil alih",
+    "keadaan": "SELESAI",
+    "ucapan": "Petugas sudah di sini. Semoga lekas sehat, Bapak.",
+    "subtitle": "Petugas sudah di sini. Semoga lekas sehat!",
+    "ekspresi": "senang",
+    "tempo": 0.9,
+    "kartu": null,
+    "efek": [
+     "audit: petugas ambil alih"
+    ],
+    "jejak": null
+   }
+  ]
+ },
+ {
+  "id": "jawa",
+  "judul": "Bahasa Jawa, Jev ragu",
+  "ringkas": "Keyakinan Jev 0,47 (pita tengah), jadi Claude dimintai pendapat kedua dan setuju.",
+  "hasil": "antrean_dicetak",
+  "frames": [
+   {
+    "peristiwa": "Pasien berdiri di depan kios",
+    "keadaan": "TANYA_MODE",
+    "ucapan": "Selamat datang, Bapak/Ibu. Saya Sapa, pemandu pendaftaran. Hari ini pakai BPJS, sudah punya kode booking dari Mobile JKN, atau bukan BPJS?",
+    "subtitle": "Pakai BPJS, kode booking Mobile JKN, atau bukan BPJS?",
+    "ekspresi": "menyapa",
+    "tempo": 0.85,
+    "kartu": null,
+    "efek": [],
+    "jejak": null
+   },
+   {
+    "peristiwa": "Pasien: “pakai BPJS”",
+    "keadaan": "SAPA_IZIN",
+    "ucapan": "Baik. Data Bapak/Ibu akan dipakai untuk pendaftaran hari ini. Boleh saya lanjutkan?",
+    "subtitle": "Data dipakai untuk daftar hari ini. Boleh? Ya / tidak",
+    "ekspresi": "mendengar",
+    "tempo": 0.85,
+    "kartu": null,
+    "efek": [
+     "audit: jawaban mode → pasti via jev"
+    ],
+    "jejak": {
+     "jev": {
+      "opsi": "bpjs",
+      "keyakinan": 0.94,
+      "pMintaPetugas": 0.02,
+      "pDarurat": 0.01
+     }
+    }
+   },
+   {
+    "peristiwa": "Pasien: “nggih, monggo”",
+    "keadaan": "MINTA_KARTU",
+    "ucapan": "Terima kasih. Silakan letakkan kartu BPJS atau KTP di kotak yang menyala.",
+    "subtitle": "Letakkan kartu BPJS / KTP di kotak yang menyala",
+    "ekspresi": "memandu",
+    "tempo": 0.9,
+    "kartu": null,
+    "efek": [
+     "audit: jawaban izin → pasti via jev",
+     "audit: izin diberikan (bercap waktu)",
+     "lampu pemindai menyala"
+    ],
+    "jejak": {
+     "jev": {
+      "opsi": "ya",
+      "keyakinan": 0.88,
+      "pMintaPetugas": 0.02,
+      "pDarurat": 0.01
+     }
+    }
+   },
+   {
+    "peristiwa": "KTP dipindai",
+    "keadaan": "VERIFIKASI_WAJAH",
+    "ucapan": "Terima kasih, Bapak. Sekarang lihat ke kamera di atas layar, ya.",
+    "subtitle": "Lihat ke kamera di atas layar",
+    "ekspresi": "memandu",
+    "tempo": 0.9,
+    "kartu": null,
+    "efek": [
+     "lampu pemindai padam",
+     "lampu wajah menyala",
+     "OBSBOT: bingkai wajah otomatis"
+    ],
+    "jejak": null
+   },
+   {
+    "peristiwa": "FRISTA 1:1: cocok",
+    "keadaan": "TANYA_KUNJUNGAN",
+    "ucapan": "Wajah sudah cocok, terima kasih. Hari ini Bapak mau kontrol, atau membawa rujukan baru?",
+    "subtitle": "Kontrol, atau bawa rujukan baru?",
+    "ekspresi": "mendengar",
+    "tempo": 0.9,
+    "kartu": null,
+    "efek": [
+     "audit: FRISTA cocok (percobaan 1)",
+     "lampu wajah padam"
+    ],
+    "jejak": null
+   },
+   {
+    "peristiwa": "Pasien: “kulo ajeng kontrol teng dokter dalem”",
+    "keadaan": "SCAN_DOKUMEN",
+    "ucapan": "Silakan letakkan surat kontrol di kotak yang menyala.",
+    "subtitle": "Letakkan surat kontrol di kotak yang menyala",
+    "ekspresi": "memandu",
+    "tempo": 0.9,
+    "kartu": null,
+    "efek": [
+     "audit: jawaban kunjungan → pasti via jev+claude",
+     "lampu pemindai menyala"
+    ],
+    "jejak": {
+     "jev": {
+      "opsi": "kontrol",
+      "keyakinan": 0.47,
+      "pMintaPetugas": 0.02,
+      "pDarurat": 0.01
+     },
+     "claude": {
+      "opsi": "kontrol",
+      "mintaPetugas": false,
+      "darurat": false
+     }
+    }
+   },
+   {
+    "peristiwa": "Surat kontrol dipindai",
+    "keadaan": "KONFIRMASI_DATA",
+    "ucapan": "Data kunjungan Bapak ada di layar. Sudah betul?",
+    "subtitle": "Data di layar sudah betul? Jawab: ya / tidak",
+    "ekspresi": "mendengar",
+    "tempo": 0.9,
+    "kartu": {
+     "judul": "Data kunjungan hari ini",
+     "baris": [
+      {
+       "label": "Nama",
+       "nilai": "Ahmad Sujono",
+       "ragu": false
+      },
+      {
+       "label": "Tanggal lahir",
+       "nilai": "1948-02-02",
+       "ragu": false
+      },
+      {
+       "label": "Kunjungan",
+       "nilai": "Kontrol",
+       "ragu": false
+      },
+      {
+       "label": "Poli tujuan",
+       "nilai": "penyakit dalam",
+       "ragu": false
+      },
+      {
+       "label": "Rujukan berlaku s.d.",
+       "nilai": "2026-12-31",
+       "ragu": false
+      }
+     ]
+    },
+    "efek": [
+     "lampu pemindai padam"
+    ],
+    "jejak": null
+   },
+   {
+    "peristiwa": "Pasien: “sudah, sudah bener”",
+    "keadaan": "MENUNGGU_PETUGAS_CEK",
+    "ucapan": "Terima kasih. Petugas sedang memeriksa sebentar, ya.",
+    "subtitle": "Petugas sedang memeriksa sebentar…",
+    "ekspresi": "senang",
+    "tempo": 0.9,
+    "kartu": {
+     "judul": "Data kunjungan hari ini",
+     "baris": [
+      {
+       "label": "Nama",
+       "nilai": "Ahmad Sujono",
+       "ragu": false
+      },
+      {
+       "label": "Tanggal lahir",
+       "nilai": "1948-02-02",
+       "ragu": false
+      },
+      {
+       "label": "Kunjungan",
+       "nilai": "Kontrol",
+       "ragu": false
+      },
+      {
+       "label": "Poli tujuan",
+       "nilai": "penyakit dalam",
+       "ragu": false
+      },
+      {
+       "label": "Rujukan berlaku s.d.",
+       "nilai": "2026-12-31",
+       "ragu": false
+      }
+     ]
+    },
+    "efek": [
+     "audit: jawaban konfirmasi → pasti via jev",
+     "draf ke dashboard petugas"
+    ],
+    "jejak": {
+     "jev": {
+      "opsi": "ya",
+      "keyakinan": 0.94,
+      "pMintaPetugas": 0.02,
+      "pDarurat": 0.01
+     }
+    }
+   },
+   {
+    "peristiwa": "Petugas menyetujui di dashboard (nomor antrean dari sistem petugas)",
+    "keadaan": "SELESAI",
+    "ucapan": "Ini nomor antrean Bapak. Silakan menuju poli, petunjuknya ada di layar. Semoga lekas sehat.",
+    "subtitle": "Nomor antrean di layar. Silakan ke poli. Lekas sehat!",
+    "ekspresi": "senang",
+    "tempo": 0.9,
+    "kartu": null,
+    "efek": [
+     "audit: petugas setuju",
+     "tampilkan nomor antrean PD-017 · arahan ke poli"
+    ],
+    "jejak": null
+   }
+  ]
+ },
+ {
+  "id": "sidikjari",
+  "judul": "Wajah tidak cocok, sidik jari",
+  "ringkas": "FRISTA dua kali tidak cocok, sidik jari juga gagal: petugas dipanggil dengan alasan verifikasi_tidak_cocok, tercatat untuk deteksi. Pasien tetap dilayani.",
+  "hasil": "dilayani_petugas",
+  "frames": [
+   {
+    "peristiwa": "Pasien berdiri di depan kios",
+    "keadaan": "TANYA_MODE",
+    "ucapan": "Selamat datang, Bapak/Ibu. Saya Sapa, pemandu pendaftaran. Hari ini pakai BPJS, sudah punya kode booking dari Mobile JKN, atau bukan BPJS?",
+    "subtitle": "Pakai BPJS, kode booking Mobile JKN, atau bukan BPJS?",
+    "ekspresi": "menyapa",
+    "tempo": 0.85,
+    "kartu": null,
+    "efek": [],
+    "jejak": null
+   },
+   {
+    "peristiwa": "Pasien: “pakai BPJS”",
+    "keadaan": "SAPA_IZIN",
+    "ucapan": "Baik. Data Bapak/Ibu akan dipakai untuk pendaftaran hari ini. Boleh saya lanjutkan?",
+    "subtitle": "Data dipakai untuk daftar hari ini. Boleh? Ya / tidak",
+    "ekspresi": "mendengar",
+    "tempo": 0.85,
+    "kartu": null,
+    "efek": [
+     "audit: jawaban mode → pasti via jev"
+    ],
+    "jejak": {
+     "jev": {
+      "opsi": "bpjs",
+      "keyakinan": 0.94,
+      "pMintaPetugas": 0.02,
+      "pDarurat": 0.01
+     }
+    }
+   },
+   {
+    "peristiwa": "Pasien: “iya, boleh”",
+    "keadaan": "MINTA_KARTU",
+    "ucapan": "Terima kasih. Silakan letakkan kartu BPJS atau KTP di kotak yang menyala.",
+    "subtitle": "Letakkan kartu BPJS / KTP di kotak yang menyala",
+    "ekspresi": "memandu",
+    "tempo": 0.9,
+    "kartu": null,
+    "efek": [
+     "audit: jawaban izin → pasti via jev",
+     "audit: izin diberikan (bercap waktu)",
+     "lampu pemindai menyala"
+    ],
+    "jejak": {
+     "jev": {
+      "opsi": "ya",
+      "keyakinan": 0.93,
+      "pMintaPetugas": 0.02,
+      "pDarurat": 0.01
+     }
+    }
+   },
+   {
+    "peristiwa": "Kartu JKN dipindai",
+    "keadaan": "VERIFIKASI_WAJAH",
+    "ucapan": "Terima kasih, Ibu. Sekarang lihat ke kamera di atas layar, ya.",
+    "subtitle": "Lihat ke kamera di atas layar",
+    "ekspresi": "memandu",
+    "tempo": 0.9,
+    "kartu": null,
+    "efek": [
+     "lampu pemindai padam",
+     "lampu wajah menyala",
+     "OBSBOT: bingkai wajah otomatis"
+    ],
+    "jejak": null
+   },
+   {
+    "peristiwa": "FRISTA 1:1: tidak cocok",
+    "keadaan": "VERIFIKASI_WAJAH",
+    "ucapan": "Kita coba sekali lagi. Lihat lurus ke kamera, ya.",
+    "subtitle": "Coba lagi: lihat lurus ke kamera",
+    "ekspresi": "memandu",
+    "tempo": 0.85,
+    "kartu": null,
+    "efek": [
+     "audit: FRISTA tidak cocok (percobaan 1)",
+     "lampu pemindai padam",
+     "lampu wajah menyala",
+     "OBSBOT: bingkai wajah otomatis"
+    ],
+    "jejak": null
+   },
+   {
+    "peristiwa": "FRISTA 1:1: tidak cocok lagi",
+    "keadaan": "VERIFIKASI_SIDIK_JARI",
+    "ucapan": "Tidak apa-apa, Ibu. Kita pakai sidik jari saja, ya. Letakkan jari telunjuk di alat sidik jari.",
+    "subtitle": "Letakkan jari telunjuk di alat sidik jari",
+    "ekspresi": "memandu",
+    "tempo": 0.85,
+    "kartu": null,
+    "efek": [
+     "audit: FRISTA tidak cocok (percobaan 2)",
+     "lampu wajah padam"
+    ],
+    "jejak": null
+   },
+   {
+    "peristiwa": "Sidik jari: tidak terbaca",
+    "keadaan": "VERIFIKASI_SIDIK_JARI",
+    "ucapan": "Sidik jarinya belum terbaca. Coba letakkan lagi, tekan pelan, ya.",
+    "subtitle": "Letakkan lagi jarinya, tekan pelan",
+    "ekspresi": "memandu",
+    "tempo": 0.85,
+    "kartu": null,
+    "efek": [
+     "audit: sidik jari tidak terbaca (percobaan 1)",
+     "lampu wajah padam"
+    ],
+    "jejak": null
+   },
+   {
+    "peristiwa": "Sidik jari: tidak cocok",
+    "keadaan": "MEMANGGIL_PETUGAS",
+    "ucapan": "Tidak apa-apa. Petugas segera datang untuk membantu verifikasi.",
+    "subtitle": "Petugas segera datang membantu",
+    "ekspresi": "petugas",
+    "tempo": 0.85,
+    "kartu": null,
+    "efek": [
+     "audit: sidik jari tidak cocok (percobaan 2)",
+     "audit: eskalasi dari VERIFIKASI_SIDIK_JARI",
+     "panggil petugas (verifikasi tidak cocok)",
+     "draf ke dashboard petugas"
+    ],
+    "jejak": null
+   },
+   {
+    "peristiwa": "Petugas tiba",
+    "keadaan": "SELESAI",
+    "ucapan": "Petugas sudah di sini. Semoga lekas sehat, Ibu.",
+    "subtitle": "Petugas sudah di sini. Semoga lekas sehat!",
+    "ekspresi": "senang",
+    "tempo": 0.9,
+    "kartu": null,
+    "efek": [
+     "audit: petugas tiba"
+    ],
+    "jejak": null
+   }
+  ]
+ },
+ {
+  "id": "darurat",
+  "judul": "Keluhan darurat",
+  "ringkas": "Pasien menyebut nyeri dada. Noul darurat Jev 0,78: petugas dipanggil segera.",
+  "hasil": "dilayani_petugas",
+  "frames": [
+   {
+    "peristiwa": "Pasien berdiri di depan kios",
+    "keadaan": "TANYA_MODE",
+    "ucapan": "Selamat datang, Bapak/Ibu. Saya Sapa, pemandu pendaftaran. Hari ini pakai BPJS, sudah punya kode booking dari Mobile JKN, atau bukan BPJS?",
+    "subtitle": "Pakai BPJS, kode booking Mobile JKN, atau bukan BPJS?",
+    "ekspresi": "menyapa",
+    "tempo": 0.85,
+    "kartu": null,
+    "efek": [],
+    "jejak": null
+   },
+   {
+    "peristiwa": "Pasien: “pakai BPJS”",
+    "keadaan": "SAPA_IZIN",
+    "ucapan": "Baik. Data Bapak/Ibu akan dipakai untuk pendaftaran hari ini. Boleh saya lanjutkan?",
+    "subtitle": "Data dipakai untuk daftar hari ini. Boleh? Ya / tidak",
+    "ekspresi": "mendengar",
+    "tempo": 0.85,
+    "kartu": null,
+    "efek": [
+     "audit: jawaban mode → pasti via jev"
+    ],
+    "jejak": {
+     "jev": {
+      "opsi": "bpjs",
+      "keyakinan": 0.94,
+      "pMintaPetugas": 0.02,
+      "pDarurat": 0.01
+     }
+    }
+   },
+   {
+    "peristiwa": "Pasien: “iya, boleh”",
+    "keadaan": "MINTA_KARTU",
+    "ucapan": "Terima kasih. Silakan letakkan kartu BPJS atau KTP di kotak yang menyala.",
+    "subtitle": "Letakkan kartu BPJS / KTP di kotak yang menyala",
+    "ekspresi": "memandu",
+    "tempo": 0.9,
+    "kartu": null,
+    "efek": [
+     "audit: jawaban izin → pasti via jev",
+     "audit: izin diberikan (bercap waktu)",
+     "lampu pemindai menyala"
+    ],
+    "jejak": {
+     "jev": {
+      "opsi": "ya",
+      "keyakinan": 0.93,
+      "pMintaPetugas": 0.02,
+      "pDarurat": 0.01
+     }
+    }
+   },
+   {
+    "peristiwa": "Kartu JKN dipindai",
+    "keadaan": "VERIFIKASI_WAJAH",
+    "ucapan": "Terima kasih, Ibu. Sekarang lihat ke kamera di atas layar, ya.",
+    "subtitle": "Lihat ke kamera di atas layar",
+    "ekspresi": "memandu",
+    "tempo": 0.9,
+    "kartu": null,
+    "efek": [
+     "lampu pemindai padam",
+     "lampu wajah menyala",
+     "OBSBOT: bingkai wajah otomatis"
+    ],
+    "jejak": null
+   },
+   {
+    "peristiwa": "FRISTA 1:1: cocok",
+    "keadaan": "TANYA_KUNJUNGAN",
+    "ucapan": "Wajah sudah cocok, terima kasih. Hari ini Ibu mau kontrol, atau membawa rujukan baru?",
+    "subtitle": "Kontrol, atau bawa rujukan baru?",
+    "ekspresi": "mendengar",
+    "tempo": 0.9,
+    "kartu": null,
+    "efek": [
+     "audit: FRISTA cocok (percobaan 1)",
+     "lampu wajah padam"
+    ],
+    "jejak": null
+   },
+   {
+    "peristiwa": "Pasien: “kontrol, tapi dada saya sakit sekali”",
+    "keadaan": "MEMANGGIL_PETUGAS",
+    "ucapan": "Saya panggilkan petugas sekarang juga. Silakan duduk dulu, ya.",
+    "subtitle": "Petugas dipanggil SEKARANG. Silakan duduk dulu",
+    "ekspresi": "petugas",
+    "tempo": 0.85,
+    "kartu": null,
+    "efek": [
+     "audit: jawaban kunjungan → darurat",
+     "audit: eskalasi dari TANYA_KUNJUNGAN",
+     "panggil petugas (kemungkinan darurat) · SEGERA",
+     "draf ke dashboard petugas"
+    ],
+    "jejak": {
+     "jev": {
+      "opsi": "kontrol",
+      "keyakinan": 0.81,
+      "pMintaPetugas": 0.02,
+      "pDarurat": 0.78
+     }
+    }
+   },
+   {
+    "peristiwa": "Petugas tiba",
+    "keadaan": "SELESAI",
+    "ucapan": "Petugas sudah di sini. Semoga lekas sehat, Ibu.",
+    "subtitle": "Petugas sudah di sini. Semoga lekas sehat!",
+    "ekspresi": "senang",
+    "tempo": 0.9,
+    "kartu": null,
+    "efek": [
+     "audit: petugas tiba"
+    ],
+    "jejak": null
+   }
+  ]
+ },
+ {
+  "id": "putus",
+  "judul": "Internet putus",
+  "ringkas": "Jev dan Claude tak terjangkau. Kata kunci memahami “BPJS” dan “nggih”, lalu dua jawaban kabur berujung ke petugas.",
+  "hasil": "dilayani_petugas",
+  "frames": [
+   {
+    "peristiwa": "Pasien berdiri di depan kios",
+    "keadaan": "TANYA_MODE",
+    "ucapan": "Selamat datang, Bapak/Ibu. Saya Sapa, pemandu pendaftaran. Hari ini pakai BPJS, sudah punya kode booking dari Mobile JKN, atau bukan BPJS?",
+    "subtitle": "Pakai BPJS, kode booking Mobile JKN, atau bukan BPJS?",
+    "ekspresi": "menyapa",
+    "tempo": 0.85,
+    "kartu": null,
+    "efek": [],
+    "jejak": null
+   },
+   {
+    "peristiwa": "Pasien: “pakai BPJS”",
+    "keadaan": "SAPA_IZIN",
+    "ucapan": "Baik. Data Bapak/Ibu akan dipakai untuk pendaftaran hari ini. Boleh saya lanjutkan?",
+    "subtitle": "Data dipakai untuk daftar hari ini. Boleh? Ya / tidak",
+    "ekspresi": "mendengar",
+    "tempo": 0.85,
+    "kartu": null,
+    "efek": [
+     "audit: jawaban mode → pasti via kata_kunci"
+    ],
+    "jejak": {
+     "jev": {
+      "galat": "InternalServerError: 503 service unavailable"
+     },
+     "claude": {
+      "galat": "InternalServerError: 529 {\"type\":\"error\",\"error\":{\"type\":\"overloaded_error\",\"message\":\"overloaded\"}}"
+     },
+     "kataKunci": {
+      "opsi": "bpjs",
+      "darurat": false
+     }
+    }
+   },
+   {
+    "peristiwa": "Pasien: “nggih, monggo”",
+    "keadaan": "MINTA_KARTU",
+    "ucapan": "Terima kasih. Silakan letakkan kartu BPJS atau KTP di kotak yang menyala.",
+    "subtitle": "Letakkan kartu BPJS / KTP di kotak yang menyala",
+    "ekspresi": "memandu",
+    "tempo": 0.9,
+    "kartu": null,
+    "efek": [
+     "audit: jawaban izin → pasti via kata_kunci",
+     "audit: izin diberikan (bercap waktu)",
+     "lampu pemindai menyala"
+    ],
+    "jejak": {
+     "jev": {
+      "galat": "InternalServerError: 503 service unavailable"
+     },
+     "claude": {
+      "galat": "InternalServerError: 529 {\"type\":\"error\",\"error\":{\"type\":\"overloaded_error\",\"message\":\"overloaded\"}}"
+     },
+     "kataKunci": {
+      "opsi": "ya",
+      "darurat": false
+     }
+    }
+   },
+   {
+    "peristiwa": "KTP dipindai",
+    "keadaan": "VERIFIKASI_WAJAH",
+    "ucapan": "Terima kasih, Bapak. Sekarang lihat ke kamera di atas layar, ya.",
+    "subtitle": "Lihat ke kamera di atas layar",
+    "ekspresi": "memandu",
+    "tempo": 0.9,
+    "kartu": null,
+    "efek": [
+     "lampu pemindai padam",
+     "lampu wajah menyala",
+     "OBSBOT: bingkai wajah otomatis"
+    ],
+    "jejak": null
+   },
+   {
+    "peristiwa": "FRISTA 1:1: cocok",
+    "keadaan": "TANYA_KUNJUNGAN",
+    "ucapan": "Wajah sudah cocok, terima kasih. Hari ini Bapak mau kontrol, atau membawa rujukan baru?",
+    "subtitle": "Kontrol, atau bawa rujukan baru?",
+    "ekspresi": "mendengar",
+    "tempo": 0.9,
+    "kartu": null,
+    "efek": [
+     "audit: FRISTA cocok (percobaan 1)",
+     "lampu wajah padam"
+    ],
+    "jejak": null
+   },
+   {
+    "peristiwa": "Pasien: “hmm, yang biasa itu lho”",
+    "keadaan": "TANYA_KUNJUNGAN",
+    "ucapan": "Maaf, boleh diulang? Kontrol, atau rujukan baru?",
+    "subtitle": "Kontrol, atau rujukan baru?",
+    "ekspresi": "mendengar",
+    "tempo": 0.85,
+    "kartu": null,
+    "efek": [
+     "audit: jawaban kunjungan → tanya_ulang"
+    ],
+    "jejak": {
+     "jev": {
+      "galat": "InternalServerError: 503 service unavailable"
+     },
+     "claude": {
+      "galat": "InternalServerError: 529 {\"type\":\"error\",\"error\":{\"type\":\"overloaded_error\",\"message\":\"overloaded\"}}"
+     },
+     "kataKunci": {
+      "opsi": "tidak_jelas",
+      "darurat": false
+     }
+    }
+   },
+   {
+    "peristiwa": "Pasien: “ya itu tadi”",
+    "keadaan": "MEMANGGIL_PETUGAS",
+    "ucapan": "Maaf, sistem saya sedang lambat. Petugas segera datang membantu.",
+    "subtitle": "Petugas segera datang membantu",
+    "ekspresi": "petugas",
+    "tempo": 0.85,
+    "kartu": null,
+    "efek": [
+     "audit: jawaban kunjungan → tanya_ulang",
+     "audit: eskalasi dari TANYA_KUNJUNGAN",
+     "panggil petugas (layanan ai terputus)",
+     "draf ke dashboard petugas"
+    ],
+    "jejak": {
+     "jev": {
+      "galat": "InternalServerError: 503 service unavailable"
+     },
+     "claude": {
+      "galat": "InternalServerError: 529 {\"type\":\"error\",\"error\":{\"type\":\"overloaded_error\",\"message\":\"overloaded\"}}"
+     },
+     "kataKunci": {
+      "opsi": "tidak_jelas",
+      "darurat": false
+     }
+    }
+   },
+   {
+    "peristiwa": "Petugas tiba",
+    "keadaan": "SELESAI",
+    "ucapan": "Petugas sudah di sini. Semoga lekas sehat, Bapak.",
+    "subtitle": "Petugas sudah di sini. Semoga lekas sehat!",
+    "ekspresi": "senang",
+    "tempo": 0.9,
+    "kartu": null,
+    "efek": [
+     "audit: petugas tiba"
+    ],
+    "jejak": null
+   }
+  ]
+ },
+ {
+  "id": "tolak",
+  "judul": "Izin ditolak",
+  "ringkas": "Pasien tidak mau datanya diproses mesin: kios tidak menyentuh kartu, petugas melayani.",
+  "hasil": "dilayani_petugas",
+  "frames": [
+   {
+    "peristiwa": "Pasien berdiri di depan kios",
+    "keadaan": "TANYA_MODE",
+    "ucapan": "Selamat datang, Bapak/Ibu. Saya Sapa, pemandu pendaftaran. Hari ini pakai BPJS, sudah punya kode booking dari Mobile JKN, atau bukan BPJS?",
+    "subtitle": "Pakai BPJS, kode booking Mobile JKN, atau bukan BPJS?",
+    "ekspresi": "menyapa",
+    "tempo": 0.85,
+    "kartu": null,
+    "efek": [],
+    "jejak": null
+   },
+   {
+    "peristiwa": "Pasien: “pakai BPJS”",
+    "keadaan": "SAPA_IZIN",
+    "ucapan": "Baik. Data Bapak/Ibu akan dipakai untuk pendaftaran hari ini. Boleh saya lanjutkan?",
+    "subtitle": "Data dipakai untuk daftar hari ini. Boleh? Ya / tidak",
+    "ekspresi": "mendengar",
+    "tempo": 0.85,
+    "kartu": null,
+    "efek": [
+     "audit: jawaban mode → pasti via jev"
+    ],
+    "jejak": {
+     "jev": {
+      "opsi": "bpjs",
+      "keyakinan": 0.94,
+      "pMintaPetugas": 0.02,
+      "pDarurat": 0.01
+     }
+    }
+   },
+   {
+    "peristiwa": "Pasien: “nggak usah, saya ke loket aja”",
+    "keadaan": "MEMANGGIL_PETUGAS",
+    "ucapan": "Baik, tidak apa-apa. Petugas akan membantu langsung, ya.",
+    "subtitle": "Petugas segera datang membantu",
+    "ekspresi": "petugas",
+    "tempo": 0.85,
+    "kartu": null,
+    "efek": [
+     "audit: jawaban izin → pasti via jev",
+     "audit: izin ditolak (bercap waktu)",
+     "audit: eskalasi dari SAPA_IZIN",
+     "panggil petugas (izin ditolak)",
+     "draf ke dashboard petugas"
+    ],
+    "jejak": {
+     "jev": {
+      "opsi": "tidak",
+      "keyakinan": 0.86,
+      "pMintaPetugas": 0.02,
+      "pDarurat": 0.01
+     }
+    }
+   },
+   {
+    "peristiwa": "Petugas tiba",
+    "keadaan": "SELESAI",
+    "ucapan": "Petugas sudah di sini. Semoga lekas sehat, Bapak/Ibu.",
+    "subtitle": "Petugas sudah di sini. Semoga lekas sehat!",
+    "ekspresi": "senang",
+    "tempo": 0.9,
+    "kartu": null,
+    "efek": [
+     "audit: petugas tiba"
+    ],
+    "jejak": null
+   }
+  ]
+ }
+]

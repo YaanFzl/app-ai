@@ -1,0 +1,36 @@
+{
+  "name": "sapa-flow",
+  "version": "1.0.0",
+  "description": "Alur percakapan Sapa (APP AI): state machine bertipe, Jev sebagai System One, Claude sebagai pendapat kedua",
+  "main": "index.js",
+  "scripts": {
+    "typecheck": "tsc -p .",
+    "test": "tsx --test test/*.test.ts",
+    "eval": "tsx eval/run-eval.ts",
+    "trace": "tsx scripts/trace.ts",
+    "coba:live": "tsx scripts/coba-live.ts",
+    "cek": "npm run typecheck && npm test && npm run uji:layar",
+    "uji:layar": "tsx --test test/layar.e2e.ts",
+    "cek:larangan": "tsx --test test/larangan.test.ts",
+    "mock": "tsx src/mock/main.ts",
+    "demo": "tsx scripts/demo.ts",
+    "dashboard": "tsx scripts/dashboard.ts",
+    "kios": "tsx scripts/kios.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^22.20.5",
+    "fast-check": "^3.23.2",
+    "playwright": "^1.64.1",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.133.0",
+    "lz-string": "^1.5.0",
+    "zod": "^3.23.8"
+  },
+  "type": "module"
+}

@@ -1,0 +1,11 @@
+# Dependensi dan hasil runtime lokal
+node_modules/
+sapa-flow/log/
+
+# Kunci hanya di .env lokal (CLAUDE.md); .env.example tetap masuk repo
+.env
+.env.*
+!.env.example
+
+# Proposal lomba tidak ikut repo publik (menunggu konfirmasi pemilik)
+Proposal APP AI*.pdf

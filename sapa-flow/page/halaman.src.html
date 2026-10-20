@@ -1,0 +1,443 @@
+<title>Alur Sapa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Tata letak: alat periksa. Atas = simulator kios (layar Sapa | langkah + di balik layar), lalu peta alur, lalu bukti. Palet mengikuti merek APP AI. */
+:root {
+  --bg: #edf2ef; --surface: #ffffff; --ink: #10302a; --muted: #4f665f; --line: #d2ddd7;
+  --brand: #17724f; --brand-2: #1e9a6e; --lime: #a6d35a; --warn: #b9501a; --warn-soft: #fbe9dc; --good-soft: #e3f1ea;
+  --kiosk: #10302a; --kiosk-2: #1a4239; --kiosk-ink: #f4f2ee; --kiosk-muted: #b9d3c9;
+  --f-display: "Montserrat", "Segoe UI", Arial, sans-serif;
+  --f-body: "Source Sans 3", "Segoe UI", Arial, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0b1a17; --surface: #12271f; --ink: #e3eee9; --muted: #9db5ad; --line: #24413a;
+  --brand: #5cc596; --brand-2: #3fb07f; --lime: #b7de72; --warn: #f0a162; --warn-soft: #3a2517; --good-soft: #173a2f;
+  --kiosk: #061210; --kiosk-2: #12302a; --kiosk-ink: #f4f2ee; --kiosk-muted: #9dbcb2; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0b1a17; --surface: #12271f; --ink: #e3eee9; --muted: #9db5ad; --line: #24413a;
+  --brand: #5cc596; --brand-2: #3fb07f; --lime: #b7de72; --warn: #f0a162; --warn-soft: #3a2517; --good-soft: #173a2f;
+  --kiosk: #061210; --kiosk-2: #12302a; --kiosk-ink: #f4f2ee; --kiosk-muted: #9dbcb2; color-scheme: dark; }
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font: 400 16px/1.55 var(--f-body); padding-inline: 20px; padding-block: 28px 64px; }
+.wrap { max-width: 1180px; margin: 0 auto; display: flex; flex-direction: column; gap: 44px; }
+h1, h2, h3 { font-family: var(--f-display); margin: 0; text-wrap: balance; }
+h1 { font-size: clamp(30px, 4.4vw, 44px); font-weight: 800; letter-spacing: -0.01em; }
+h2 { font-size: 24px; font-weight: 700; }
+h3 { font-size: 16px; font-weight: 700; }
+p { margin: 0; }
+.mono { font-family: var(--f-mono); font-size: 12.5px; }
+.eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--brand); }
+.lead { color: var(--muted); max-width: 70ch; }
+section { display: flex; flex-direction: column; gap: 16px; }
+.sec-head { display: flex; flex-direction: column; gap: 6px; }
+
+/* header */
+header { display: flex; flex-direction: column; gap: 14px; }
+.title-row { display: flex; align-items: center; gap: 16px; }
+.title-row .ava { width: 64px; height: 64px; flex: none; }
+.facts { display: flex; flex-wrap: wrap; gap: 8px; }
+.fact { display: inline-flex; gap: 6px; align-items: baseline; padding: 6px 12px; border-radius: 999px; background: var(--surface); border: 1px solid var(--line); font-size: 14px; }
+.fact b { font-family: var(--f-display); font-variant-numeric: tabular-nums; }
+
+/* scenario chips */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { font: 600 14px var(--f-body); color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; cursor: pointer; }
+.chip:hover { border-color: var(--brand-2); }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.chip:focus-visible, button:focus-visible, .step:focus-visible { outline: 3px solid var(--lime); outline-offset: 2px; }
+.scn-sum { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; color: var(--muted); }
+.pill { display: inline-block; padding: 3px 10px; border-radius: 999px; font: 700 12px var(--f-body); letter-spacing: 0.04em; text-transform: uppercase; }
+.pill.ok { background: var(--good-soft); color: var(--brand); }
+.pill.help { background: var(--warn-soft); color: var(--warn); }
+
+/* simulator */
+.sim { display: grid; grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+@media (max-width: 920px) { .sim { grid-template-columns: minmax(0, 1fr); } }
+.left { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.kiosk { background: var(--kiosk); color: var(--kiosk-ink); border-radius: 22px; padding: 18px 20px 20px; display: flex; flex-direction: column; gap: 14px; min-height: 470px; }
+.k-top { display: flex; justify-content: space-between; align-items: center; color: var(--kiosk-muted); font-size: 13px; }
+.cam { display: inline-flex; align-items: center; gap: 8px; }
+.cam i { width: 10px; height: 10px; border-radius: 50%; background: var(--lime); box-shadow: 0 0 0 3px rgba(166, 211, 90, 0.25); }
+.k-stage { flex: 1; display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; align-items: center; }
+.k-stage.with-card { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); }
+@media (max-width: 560px) { .k-stage.with-card { grid-template-columns: minmax(0, 1fr); } }
+.k-ava { height: 230px; display: flex; justify-content: center; transition: transform 0.25s ease; }
+.with-card .k-ava { height: 180px; }
+.k-ava svg { width: auto !important; height: 100% !important; }
+.k-ava.bump { animation: bump 0.35s ease; }
+@keyframes bump { 0% { transform: translateY(6px) scale(0.97); } 100% { transform: none; } }
+.k-card { background: var(--kiosk-ink); color: #10302a; border-radius: 14px; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; }
+.k-card[hidden] { display: none; }
+.k-card h4 { margin: 0; font: 700 14px var(--f-display); }
+.k-row { display: grid; grid-template-columns: 9.5em minmax(0, 1fr); gap: 8px; font-size: 15px; border-top: 1px solid #dad7d0; padding-top: 6px; }
+.k-row span:first-child { color: #4f665f; }
+.k-row.ragu span:last-child { color: #b9501a; font-weight: 700; }
+.k-row.ragu span:last-child::after { content: " · perlu dicek"; font-weight: 600; font-size: 13px; }
+.subtitle { background: var(--kiosk-2); border-radius: 14px; padding: 14px 18px; font: 700 clamp(20px, 2.6vw, 27px)/1.25 var(--f-display); min-height: 2.6em; display: flex; align-items: center; }
+.spoken { display: flex; gap: 10px; align-items: flex-start; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; }
+.spoken svg { flex: none; margin-top: 3px; }
+.spoken p { font-style: italic; }
+.spoken .meta { font-style: normal; color: var(--muted); font-size: 13px; margin-top: 4px; }
+.controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+button.btn { font: 700 14px var(--f-body); border-radius: 10px; padding: 9px 14px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer; }
+button.btn.primary { background: var(--brand); color: #fff; border-color: var(--brand); }
+:root[data-theme="dark"] button.btn.primary { color: #0b1a17; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) button.btn.primary { color: #0b1a17; } }
+button.btn:disabled { opacity: 0.45; cursor: default; }
+.counter { color: var(--muted); font-size: 14px; font-variant-numeric: tabular-nums; margin-left: auto; }
+
+.right { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+ol.steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; max-height: 300px; overflow-y: auto; }
+.step { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 8px; padding: 6px 8px; border-radius: 10px; cursor: pointer; }
+.step:hover { background: var(--bg); }
+.step .n { font: 700 13px var(--f-display); color: var(--muted); font-variant-numeric: tabular-nums; padding-top: 2px; }
+.step .t { font-size: 14.5px; }
+.step .tag { color: var(--muted); }
+.step.done .n { color: var(--brand); }
+.step.now { background: var(--good-soft); }
+.step.now .n { color: var(--brand); }
+.step.future { opacity: 0.55; }
+
+.meter { display: grid; grid-template-columns: 8.6em minmax(0, 1fr) 3.2em; gap: 10px; align-items: center; font-size: 14px; }
+.bar { position: relative; height: 10px; border-radius: 99px; background: var(--bg); border: 1px solid var(--line); }
+.bar i { position: absolute; inset: 0 auto 0 0; border-radius: 99px; background: var(--brand-2); }
+.bar i.hot { background: var(--warn); }
+.bar b { position: absolute; top: -4px; bottom: -4px; width: 2px; background: var(--ink); opacity: 0.55; }
+.meter .v { text-align: right; font-variant-numeric: tabular-nums; font-weight: 700; }
+.verdict { font-size: 14.5px; }
+.verdict b { color: var(--brand); }
+.verdict .err { color: var(--warn); font-weight: 700; }
+ul.fx { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 4px; font-size: 14px; }
+ul.fx li { display: grid; grid-template-columns: 14px minmax(0, 1fr); gap: 6px; }
+ul.fx li::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--brand-2); margin-top: 8px; }
+ul.fx li.alert::before { background: var(--warn); }
+ul.fx li.alert { color: var(--warn); font-weight: 700; }
+.quiet { color: var(--muted); font-size: 14px; }
+
+/* map */
+.map { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 12px; overflow-x: auto; }
+.map svg { display: block; min-width: 980px; width: 100%; height: auto; }
+.node rect { fill: var(--bg); stroke: var(--line); stroke-width: 1.5; }
+.node text { fill: var(--ink); font: 700 13px var(--f-display); }
+.node .sub { fill: var(--muted); font: 600 11px var(--f-body); }
+.node.on rect { fill: var(--lime); stroke: var(--lime); }
+.node.on text, .node.on .sub { fill: #10302a; }
+.node.help rect { fill: var(--warn-soft); stroke: var(--warn); }
+.node.help.on rect { fill: var(--warn); stroke: var(--warn); }
+.node.help.on text, .node.help.on .sub { fill: #fff; }
+.edge { stroke: var(--brand-2); stroke-width: 2; fill: none; }
+.edge.esc { stroke: var(--warn); stroke-dasharray: 5 5; stroke-width: 1.5; opacity: 0.8; }
+.loop { fill: var(--muted); font: 600 11px var(--f-body); }
+.legend { display: flex; flex-wrap: wrap; gap: 16px; color: var(--muted); font-size: 13.5px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 26px; height: 0; border-top: 2px solid var(--brand-2); }
+.legend i.esc { border-top: 2px dashed var(--warn); }
+
+/* pipeline */
+.pipe { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 860px) { .pipe { grid-template-columns: minmax(0, 1fr); } }
+.tier { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+.tier .who { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.tier .when { font-size: 13px; color: var(--muted); }
+.tier ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; font-size: 14.5px; }
+.tier code, td code { font-family: var(--f-mono); font-size: 12.5px; background: var(--bg); padding: 1px 5px; border-radius: 5px; }
+.tier.first { border-color: var(--brand-2); }
+
+/* tables */
+.tbl { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+th, td { text-align: left; vertical-align: top; padding: 10px 14px; border-bottom: 1px solid var(--line); }
+th { font: 700 12px var(--f-body); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); background: var(--bg); }
+tr:last-child td { border-bottom: 0; }
+td.num { font-variant-numeric: tabular-nums; font-weight: 700; white-space: nowrap; }
+td.na { color: var(--muted); }
+.naskah td:nth-child(3) { font-style: italic; }
+.naskah .pose { width: 40px; height: 40px; }
+.note { font-size: 14px; color: var(--muted); max-width: 80ch; }
+footer { color: var(--muted); font-size: 14px; display: flex; flex-direction: column; gap: 6px; border-top: 1px solid var(--line); padding-top: 18px; }
+footer a { color: var(--brand); }
+@media (prefers-reduced-motion: reduce) { .k-ava.bump { animation: none; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="title-row">
+      <div class="ava" id="hdrAva" aria-hidden="true"></div>
+      <div>
+        <p class="eyebrow">APP AI · Healthkathon 2026</p>
+        <h1>Alur Sapa</h1>
+      </div>
+    </div>
+    <p class="lead">Alur percakapan kios, langkah demi langkah: apa yang diucapkan Sapa, apa yang tampil di layar, siapa yang memutuskan, dan apa yang tercatat. Semua yang tampil di sini dihasilkan dengan menjalankan kode TypeScript-nya, bukan digambar ulang.</p>
+    <div class="facts" id="facts"></div>
+  </header>
+
+  <section aria-labelledby="sim-h">
+    <div class="sec-head">
+      <h2 id="sim-h">Simulator</h2>
+      <p class="lead">Pilih skenario, lalu maju langkah demi langkah. Jev dan Claude di skenario ini adalah balasan contoh yang dipasang lewat SDK aslinya, jadi angka keyakinannya ilustrasi.</p>
+    </div>
+    <div class="chips" id="chips" role="group" aria-label="Skenario"></div>
+    <div class="scn-sum"><span id="scnText"></span><span id="scnRes"></span></div>
+    <div class="sim">
+      <div class="left">
+        <div class="kiosk" aria-live="polite">
+          <div class="k-top"><span class="cam"><i></i>OBSBOT · mikrofon aktif</span><span class="mono" id="kTag"></span></div>
+          <div class="k-stage" id="kStage">
+            <div class="k-ava" id="kAva"></div>
+            <div class="k-card" id="kCard" hidden></div>
+          </div>
+          <div class="subtitle" id="kSub"></div>
+        </div>
+        <div class="spoken">
+          <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="var(--brand)"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" stroke="var(--brand)" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+          <div><p id="kSpeak"></p><p class="meta" id="kMeta"></p></div>
+        </div>
+        <div class="controls">
+          <button class="btn" id="prev" type="button">← Sebelumnya</button>
+          <button class="btn primary" id="next" type="button">Berikutnya →</button>
+          <button class="btn" id="play" type="button" aria-pressed="false">Putar otomatis</button>
+          <span class="counter" id="counter"></span>
+        </div>
+      </div>
+      <div class="right">
+        <div class="panel">
+          <h3>Langkah</h3>
+          <ol class="steps" id="steps"></ol>
+        </div>
+        <div class="panel">
+          <h3>Di balik layar</h3>
+          <div id="brain"></div>
+          <ul class="fx" id="fx"></ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="map-h">
+    <div class="sec-head">
+      <h2 id="map-h">Peta alur</h2>
+      <p class="lead">Sembilan keadaan. Jalur hijau adalah pendaftaran mandiri; setiap keadaan punya jalan keluar ke petugas. Tidak ada keadaan "ditolak". Kotak yang menyala mengikuti simulator.</p>
+    </div>
+    <div class="map" id="map"></div>
+    <div class="legend"><span><i></i>berhasil, lanjut</span><span><i class="esc"></i>ke petugas: gagal, menolak izin, minta petugas, atau darurat</span></div>
+  </section>
+
+  <section aria-labelledby="pipe-h">
+    <div class="sec-head">
+      <h2 id="pipe-h">Cara jawaban lisan dipahami</h2>
+      <p class="lead">Jawaban pasien selalu dipetakan ke daftar opsi tertutup; tidak ada model yang mengarang kalimat untuk pasien. Ucapan disamarkan dulu: semua angka diganti <code class="mono">[angka]</code> sebelum keluar dari kios.</p>
+    </div>
+    <div class="pipe">
+      <div class="tier first">
+        <div class="who"><h3>1 · Jev (TypeSafe)</h3><span class="when">setiap giliran</span></div>
+        <p class="quiet">Model "System One": mengembalikan jawaban bertipe dengan probabilitas, tanpa teks bebas. Satu panggilan berisi tiga pertanyaan paralel.</p>
+        <ul>
+          <li><code>choice</code> opsi + <code>tidak_jelas</code>: keyakinan ≥ 0,6 diterima; 0,3–0,6 minta pendapat kedua; &lt; 0,3 tanya ulang</li>
+          <li><code>noul</code> minta petugas ≥ 0,7 → panggil petugas</li>
+          <li><code>noul</code> darurat ≥ 0,3 → petugas <b>segera</b> (sengaja peka)</li>
+        </ul>
+      </div>
+      <div class="tier">
+        <div class="who"><h3>2 · Claude Haiku 5.5</h3><span class="when">hanya saat Jev ragu</span></div>
+        <p class="quiet">Pendapat kedua lewat strict tool use: enum opsi yang sama, <code>tool_choice</code> dipaksa, hasil divalidasi ulang dengan Zod.</p>
+        <ul>
+          <li>Diterima hanya bila <b>sama</b> dengan pilihan Jev</li>
+          <li>Berbeda → tanya ulang, bukan menebak</li>
+          <li>Bila Jev tak terjangkau, Claude jadi penilai tunggal</li>
+        </ul>
+      </div>
+      <div class="tier">
+        <div class="who"><h3>3 · Kata kunci</h3><span class="when">saat keduanya putus</span></div>
+        <p class="quiet">Mode darurat tanpa AI, ditandai di audit. Kamus kecil bahasa Indonesia, Jawa, dan Sunda.</p>
+        <ul>
+          <li>Tepat satu opsi yang cocok → diterima</li>
+          <li>Nol atau dua opsi cocok ("nggak apa-apa, silakan") → tanya ulang</li>
+          <li>Kata darurat ("sesak", "nyeri dada") tetap memanggil petugas segera</li>
+        </ul>
+      </div>
+    </div>
+    <p class="note">Ambang di atas adalah nilai awal. Dokumentasi Jev menegaskan ambang harus dikalibrasi per pertanyaan dengan data sendiri; kalibrasi dilakukan dengan rekaman relawan lansia saat prototype.</p>
+  </section>
+
+  <section aria-labelledby="bukti-h">
+    <div class="sec-head">
+      <h2 id="bukti-h">Jaminan yang dibuktikan</h2>
+      <p class="lead">Typesafe berarti pelanggaran ditolak kompiler atau tertangkap uji, bukan dijanjikan di slide. Hasil terakhir: <b>pemeriksaan tipe ketat lulus, 25 dari 25 uji lulus</b>, termasuk 2 × 3.000 alur acak.</p>
+    </div>
+    <div class="tbl"><table>
+      <thead><tr><th>Jaminan</th><th>Dijaga oleh</th><th>Bukti</th></tr></thead>
+      <tbody>
+        <tr><td>Kios tidak pernah menolak pasien</td><td>Tipe <code>HasilAkhir</code> hanya punya <code>antrean_dicetak</code> dan <code>dilayani_petugas</code></td><td>Uji tipe; 3.000 alur acak selalu berakhir di salah satunya</td></tr>
+        <tr><td>Nama, NIK, dan poli tidak pernah diucapkan</td><td>Tipe <code>Ucapan</code>: <code>ucap`…`</code> hanya menerima sapaan atau angka 1–3</td><td>Tiga <code>@ts-expect-error</code>; cek setiap ucapan di 3.000 alur</td></tr>
+        <tr><td>Izin selalu lebih dulu</td><td>Kartu baru diproses setelah audit izin</td><td>Properti: identitas hanya ada bila izin sudah diberikan</td></tr>
+        <tr><td>Tidak ada putaran tanpa akhir</td><td>Batas ulang di setiap keadaan</td><td>Dari keadaan mana pun, dua kali diam selalu sampai ke petugas</td></tr>
+        <tr><td>Angka tidak keluar dari kios</td><td>Penilai hanya menerima <code>UjaranTersamar</code></td><td>Payload HTTP ke Jev dan Claude diperiksa: tidak ada deret angka</td></tr>
+        <tr><td>Claude tidak bisa mengarang opsi</td><td>Strict tool + validasi Zod + harus sama dengan Jev</td><td>Opsi di luar daftar ditolak, kios bertanya ulang</td></tr>
+        <tr><td>Keluhan darurat menang atas segalanya</td><td>Noul darurat di setiap giliran, juga di mode kata kunci</td><td>Skenario darurat; prioritas naik walau sudah menunggu petugas</td></tr>
+        <tr><td>AI tidak menulis ke SIMRS atau BPJS</td><td>Efek terjauh hanyalah <code>kirim_draf_ke_petugas</code></td><td>Tipe <code>Efek</code> tidak punya aksi tulis</td></tr>
+      </tbody>
+    </table></div>
+    <p class="note">Uji mutasi: tiga kerusakan dipasang sengaja (menambah hasil "ditolak", membuat Sapa mengucapkan nama, menghapus batas tanya ulang). Ketiganya tertangkap. Yang kedua awalnya <b>lolos</b> karena uji acak jarang sampai akhir alur; generatornya lalu dibuat kooperatif, dan kini tertangkap di dua uji.</p>
+  </section>
+
+  <section aria-labelledby="eval-h">
+    <div class="sec-head">
+      <h2 id="eval-h">Evaluasi pemahaman</h2>
+      <p class="lead">40 ujaran berlabel (bahasa sehari-hari, Jawa, Sunda, ragu-ragu, minta petugas, darurat). Metrik terpenting bagi kios adalah <b>salah-yakin</b>: jawaban salah yang langsung diterima. Salah yang berujung tanya ulang atau petugas masih aman.</p>
+    </div>
+    <div class="tbl"><table>
+      <thead><tr><th>Penilai</th><th>Benar</th><th>Salah, aman</th><th>Salah-yakin</th><th>Darurat terlewat</th></tr></thead>
+      <tbody>
+        <tr><td>Kata kunci (tanpa AI)</td><td class="num">90,0%</td><td class="num">3</td><td class="num">1</td><td class="num">0</td></tr>
+        <tr><td>Jev saja</td><td class="na" colspan="4">Belum dijalankan: butuh kunci API TypeSafe (akses Jev masih early access)</td></tr>
+        <tr><td>Jev + Claude</td><td class="na" colspan="4">Belum dijalankan: butuh kunci API TypeSafe dan Anthropic</td></tr>
+      </tbody>
+    </table></div>
+    <p class="note">Angka kata kunci terlalu optimistis: set ujaran dan kamus ditulis oleh tim yang sama, dan kamus disetel pada set ini. Gunanya sebagai garis dasar. Angka yang layak dikutip ke juri baru ada setelah set diganti transkrip relawan lansia dan dijalankan dengan <code class="mono">npm run eval</code>. Dari evaluasi ini juga lahir pemeriksaan darurat: "dada saya sakit sekali" awalnya hanya dipetakan sebagai "keperluan lain".</p>
+  </section>
+
+  <section aria-labelledby="naskah-h">
+    <div class="sec-head">
+      <h2 id="naskah-h">Naskah Sapa</h2>
+      <p class="lead">Semua kalimat yang bisa diucapkan Sapa, ditulis dan ditinjau manusia. Kompiler menolak build bila satu keadaan atau satu alasan petugas belum punya naskah.</p>
+    </div>
+    <div class="tbl"><table class="naskah">
+      <thead><tr><th>Keadaan</th><th>Pose</th><th>Diucapkan (TTS)</th><th>Subtitle</th></tr></thead>
+      <tbody id="naskah"></tbody>
+    </table></div>
+  </section>
+
+  <footer>
+    <p>Kode: proyek <span class="mono">sapa-flow</span> (TypeScript strict, Zod, <span class="mono">@typesafe-ai/sdk</span> 0.6.0, <span class="mono">@anthropic-ai/sdk</span>). Periksa ulang kapan saja dengan <span class="mono">npm run cek</span>.</p>
+    <p>Rujukan: <a href="https://docs.typesafe.ai/introduction" target="_blank" rel="noopener">Dokumentasi Jev</a> · <a href="https://docs.typesafe.ai/confidence" target="_blank" rel="noopener">Confidence &amp; ambang</a> · <a href="https://platform.claude.com/docs/en/build-with-claude/structured-outputs" target="_blank" rel="noopener">Claude structured outputs</a></p>
+  </footer>
+</div>
+
+<script>
+const SKENARIO = __TRACES__;
+const AVATAR = __AVATAR__;
+const NASKAH = __NASKAH__;
+
+const NAMA_KEADAAN = {
+  SAPA_IZIN: "Sapa & izin", MINTA_KARTU: "Minta kartu", VERIFIKASI_WAJAH: "Verifikasi wajah", TANYA_KUNJUNGAN: "Tanya kunjungan",
+  SCAN_DOKUMEN: "Scan dokumen", KONFIRMASI_DATA: "Konfirmasi data", MENUNGGU_PETUGAS_CEK: "Petugas memeriksa",
+  MEMANGGIL_PETUGAS: "Memanggil petugas", SELESAI: "Selesai",
+};
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+const fmt = (x) => x.toFixed(2).replace(".", ",");
+
+let si = 0, fi = 0, timer = null;
+
+$("hdrAva").innerHTML = AVATAR.menyapa;
+$("facts").innerHTML = [["9", "keadaan"], ["25/25", "uji lulus"], ["6.000", "alur acak diuji"], ["7", "skenario"], ["40", "ujaran evaluasi"]]
+  .map(([b, t]) => `<span class="fact"><b>${b}</b>${t}</span>`).join("");
+
+$("chips").innerHTML = SKENARIO.map((s, i) => `<button class="chip" type="button" data-i="${i}" aria-pressed="${i === 0}">${esc(s.judul)}</button>`).join("");
+$("chips").addEventListener("click", (e) => { const b = e.target.closest(".chip"); if (b) { pilih(+b.dataset.i); } });
+
+function pilih(i) { si = i; fi = 0; stop(); render(true); }
+
+function render(gantiSkenario) {
+  const s = SKENARIO[si], f = s.frames[fi];
+  document.querySelectorAll(".chip").forEach((c, i) => c.setAttribute("aria-pressed", String(i === si)));
+  if (gantiSkenario) {
+    $("scnText").textContent = s.ringkas;
+    $("scnRes").innerHTML = s.hasil === "antrean_dicetak" ? '<span class="pill ok">Hasil: antrean dicetak</span>' : '<span class="pill help">Hasil: dilayani petugas</span>';
+  }
+  // kiosk
+  const ava = $("kAva"); ava.innerHTML = AVATAR[f.ekspresi] || AVATAR.menyapa; ava.classList.remove("bump"); void ava.offsetWidth; ava.classList.add("bump");
+  $("kTag").textContent = f.keadaan;
+  $("kSub").textContent = f.subtitle;
+  const card = $("kCard");
+  if (f.kartu) {
+    card.innerHTML = `<h4>${esc(f.kartu.judul)}</h4>` + f.kartu.baris.map((b) => `<div class="k-row${b.ragu ? " ragu" : ""}"><span>${esc(b.label)}</span><span>${esc(b.nilai)}</span></div>`).join("");
+    card.hidden = false; $("kStage").classList.add("with-card");
+  } else { card.hidden = true; $("kStage").classList.remove("with-card"); }
+  $("kSpeak").textContent = "“" + f.ucapan + "”";
+  $("kMeta").textContent = `Diucapkan lewat speaker · tempo ${String(f.tempo).replace(".", ",")}× · pose “${f.ekspresi}”`;
+  // steps
+  $("steps").innerHTML = s.frames.map((x, i) => `<li class="step ${i < fi ? "done" : i === fi ? "now" : "future"}" tabindex="0" data-i="${i}"><span class="n">${i + 1}</span><span><span class="t">${esc(x.peristiwa)}</span><br><span class="tag mono">→ ${NAMA_KEADAAN[x.keadaan]}</span></span></li>`).join("");
+  const now = $("steps").querySelector(".now"); if (now) now.scrollIntoView({ block: "nearest" });
+  // brain
+  $("brain").innerHTML = otak(f);
+  $("fx").innerHTML = f.efek.length ? f.efek.map((e) => `<li class="${/SEGERA|eskalasi|panggil petugas|bendera/.test(e) ? "alert" : ""}">${esc(e)}</li>`).join("") : '<li>Menunggu pasien.</li>';
+  // controls
+  $("prev").disabled = fi === 0; $("next").disabled = fi === s.frames.length - 1;
+  $("counter").textContent = `Langkah ${fi + 1} dari ${s.frames.length}`;
+  document.querySelectorAll("#map .node").forEach((n) => n.classList.toggle("on", n.dataset.tag === f.keadaan || (f.keadaan === "SELESAI" && n.dataset.tag === "SELESAI_" + s.hasil)));
+}
+
+function meter(label, v, ambang, panas) {
+  return `<div class="meter"><span>${label}</span><span class="bar"><i class="${panas ? "hot" : ""}" style="width:${Math.round(v * 100)}%"></i>${ambang.map((a) => `<b style="left:${a * 100}%"></b>`).join("")}</span><span class="v">${fmt(v)}</span></div>`;
+}
+function otak(f) {
+  const j = f.jejak;
+  if (!j) return '<p class="quiet">Tidak ada jawaban lisan di langkah ini, jadi tidak ada AI yang dipanggil. Keputusan diambil oleh kode dari hasil perangkat.</p>';
+  let h = "";
+  if (j.jev && "galat" in j.jev) h += `<p class="verdict"><span class="err">Jev tak terjangkau</span> <span class="quiet">(${esc(j.jev.galat.split(":")[0])})</span></p>`;
+  else if (j.jev) {
+    h += `<p class="verdict">Jev memilih <b>${esc(j.jev.opsi.replace(/_/g, " "))}</b></p>`;
+    h += meter("Keyakinan", j.jev.keyakinan, [0.3, 0.6], false);
+    h += meter("Minta petugas", j.jev.pMintaPetugas, [0.7], j.jev.pMintaPetugas >= 0.7);
+    h += meter("Darurat", j.jev.pDarurat, [0.3], j.jev.pDarurat >= 0.3);
+  }
+  if (j.claude && "galat" in j.claude) h += `<p class="verdict"><span class="err">Claude tak terjangkau</span> <span class="quiet">(${esc(j.claude.galat.split(":")[0])})</span></p>`;
+  else if (j.claude) h += `<p class="verdict">Claude Haiku 5.5 memilih <b>${esc(j.claude.opsi.replace(/_/g, " "))}</b>${j.jev && !("galat" in j.jev) ? (j.claude.opsi === j.jev.opsi ? ", sama dengan Jev: diterima" : ", berbeda dari Jev: tanya ulang") : ""}</p>`;
+  else if (j.jev && !("galat" in j.jev)) h += '<p class="quiet">Claude tidak dipanggil: keyakinan Jev di luar pita 0,3–0,6.</p>';
+  if (j.kataKunci) h += `<p class="verdict">Mode kata kunci: <b>${esc(j.kataKunci.opsi.replace(/_/g, " "))}</b>${j.kataKunci.opsi === "tidak_jelas" ? " → tanya ulang" : " → diterima, ditandai di audit"}</p>`;
+  return h;
+}
+
+function maju() { const s = SKENARIO[si]; if (fi < s.frames.length - 1) { fi++; render(false); return true; } return false; }
+function mundur() { if (fi > 0) { fi--; render(false); } }
+function stop() { if (timer) { clearInterval(timer); timer = null; } $("play").setAttribute("aria-pressed", "false"); $("play").textContent = "Putar otomatis"; }
+$("next").addEventListener("click", () => { stop(); maju(); });
+$("prev").addEventListener("click", () => { stop(); mundur(); });
+$("play").addEventListener("click", () => {
+  if (timer) return stop();
+  if (fi === SKENARIO[si].frames.length - 1) { fi = 0; render(false); }
+  $("play").setAttribute("aria-pressed", "true"); $("play").textContent = "Jeda";
+  timer = setInterval(() => { if (!maju()) stop(); }, 2400);
+});
+$("steps").addEventListener("click", (e) => { const li = e.target.closest(".step"); if (li) { stop(); fi = +li.dataset.i; render(false); } });
+$("steps").addEventListener("keydown", (e) => { if (e.key === "Enter") { const li = e.target.closest(".step"); if (li) { stop(); fi = +li.dataset.i; render(false); } } });
+document.addEventListener("keydown", (e) => { if (e.target.closest("input,textarea")) return; if (e.key === "ArrowRight") { stop(); maju(); } if (e.key === "ArrowLeft") { stop(); mundur(); } });
+
+// peta alur
+(function peta() {
+  const utama = [
+    ["SAPA_IZIN", "Sapa & izin", "tanya ulang 1×"], ["MINTA_KARTU", "Minta kartu", "baca ulang 1×"], ["VERIFIKASI_WAJAH", "Verifikasi wajah", "pandu ≤ 2×"],
+    ["TANYA_KUNJUNGAN", "Tanya kunjungan", "tanya ulang 1×"], ["SCAN_DOKUMEN", "Scan dokumen", "baca ulang 1×"], ["KONFIRMASI_DATA", "Konfirmasi data", "tanya ulang 1×"],
+    ["MENUNGGU_PETUGAS_CEK", "Petugas cek", "setuju / ambil alih"], ["SELESAI_antrean_dicetak", "Selesai", "antrean dicetak"],
+  ];
+  const W = 1100, bw = 118, bh = 54, gap = (W - 20 - utama.length * bw) / (utama.length - 1), y1 = 40, y2 = 230;
+  let g = "", x = (i) => 10 + i * (bw + gap);
+  utama.forEach(([tag, nama, sub], i) => {
+    if (i < utama.length - 1) g += `<path class="edge" d="M${x(i) + bw} ${y1 + bh / 2} H${x(i + 1) - 6}" marker-end="url(#ah)"/>`;
+    if (i < 7) g += `<path class="edge esc" d="M${x(i) + bw / 2} ${y1 + bh} V${y2 - 6}" marker-end="url(#ahw)"/>`;
+    g += `<g class="node" data-tag="${tag}"><rect x="${x(i)}" y="${y1}" width="${bw}" height="${bh}" rx="12"/><text x="${x(i) + bw / 2}" y="${y1 + 23}" text-anchor="middle">${nama}</text><text class="sub" x="${x(i) + bw / 2}" y="${y1 + 41}" text-anchor="middle">${sub}</text></g>`;
+  });
+  const px = x(0), pw = x(6) + bw - x(0);
+  g += `<g class="node help" data-tag="MEMANGGIL_PETUGAS"><rect x="${px}" y="${y2}" width="${pw}" height="${bh}" rx="12"/><text x="${px + pw / 2}" y="${y2 + 23}" text-anchor="middle">Memanggil petugas</text><text class="sub" x="${px + pw / 2}" y="${y2 + 41}" text-anchor="middle">14 alasan tertutup, tercatat di audit · darurat = prioritas segera · draf data ikut dikirim</text></g>`;
+  g += `<path class="edge" d="M${px + pw} ${y2 + bh / 2} H${x(7) - 6}" marker-end="url(#ah)"/>`;
+  g += `<g class="node" data-tag="SELESAI_dilayani_petugas"><rect x="${x(7)}" y="${y2}" width="${bw}" height="${bh}" rx="12"/><text x="${x(7) + bw / 2}" y="${y2 + 23}" text-anchor="middle">Selesai</text><text class="sub" x="${x(7) + bw / 2}" y="${y2 + 41}" text-anchor="middle">dilayani petugas</text></g>`;
+  g += `<text class="loop" x="${x(0)}" y="${y1 + bh + 34}">tolak izin, tidak jelas 2×,</text><text class="loop" x="${x(0)}" y="${y1 + bh + 48}">minta petugas, darurat</text>`;
+  g += `<text class="loop" x="${x(2) + bw / 2 + 8}" y="${y1 + bh + 34}">tidak cocok 2×,</text><text class="loop" x="${x(2) + bw / 2 + 8}" y="${y1 + bh + 48}">tak terdeteksi 3×</text>`;
+  g += `<text class="loop" x="${x(5) + bw / 2 + 8}" y="${y1 + bh + 34}">pasien bilang</text><text class="loop" x="${x(5) + bw / 2 + 8}" y="${y1 + bh + 48}">data salah</text>`;
+  $("map").innerHTML = `<svg viewBox="0 0 ${W} ${y2 + bh + 14}" role="img" aria-label="Peta alur Sapa: delapan langkah pendaftaran mandiri dengan jalan keluar ke petugas dari setiap langkah"><defs>
+    <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--brand-2)"/></marker>
+    <marker id="ahw" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--warn)"/></marker></defs>${g}</svg>`;
+})();
+
+// naskah
+$("naskah").innerHTML = NASKAH.map((n) => `<tr><td><b>${NAMA_KEADAAN[n.keadaan]}</b>${n.varian ? `<br><span class="quiet">${esc(n.varian)}</span>` : ""}</td><td><div class="pose" title="${n.ekspresi}">${AVATAR[n.ekspresi]}</div></td><td>${esc(n.ucapan)}</td><td>${esc(n.subtitle)}</td></tr>`).join("");
+
+render(true);
+</script>

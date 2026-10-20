@@ -1,0 +1,443 @@
+<title>Alur Sapa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Tata letak: alat periksa. Atas = simulator kios (layar Sapa | langkah + di balik layar), lalu peta alur, lalu bukti. Palet mengikuti merek APP AI. */
+:root {
+  --bg: #edf2ef; --surface: #ffffff; --ink: #10302a; --muted: #4f665f; --line: #d2ddd7;
+  --brand: #17724f; --brand-2: #1e9a6e; --lime: #a6d35a; --warn: #b9501a; --warn-soft: #fbe9dc; --good-soft: #e3f1ea;
+  --kiosk: #10302a; --kiosk-2: #1a4239; --kiosk-ink: #f4f2ee; --kiosk-muted: #b9d3c9;
+  --f-display: "Montserrat", "Segoe UI", Arial, sans-serif;
+  --f-body: "Source Sans 3", "Segoe UI", Arial, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0b1a17; --surface: #12271f; --ink: #e3eee9; --muted: #9db5ad; --line: #24413a;
+  --brand: #5cc596; --brand-2: #3fb07f; --lime: #b7de72; --warn: #f0a162; --warn-soft: #3a2517; --good-soft: #173a2f;
+  --kiosk: #061210; --kiosk-2: #12302a; --kiosk-ink: #f4f2ee; --kiosk-muted: #9dbcb2; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0b1a17; --surface: #12271f; --ink: #e3eee9; --muted: #9db5ad; --line: #24413a;
+  --brand: #5cc596; --brand-2: #3fb07f; --lime: #b7de72; --warn: #f0a162; --warn-soft: #3a2517; --good-soft: #173a2f;
+  --kiosk: #061210; --kiosk-2: #12302a; --kiosk-ink: #f4f2ee; --kiosk-muted: #9dbcb2; color-scheme: dark; }
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font: 400 16px/1.55 var(--f-body); padding-inline: 20px; padding-block: 28px 64px; }
+.wrap { max-width: 1180px; margin: 0 auto; display: flex; flex-direction: column; gap: 44px; }
+h1, h2, h3 { font-family: var(--f-display); margin: 0; text-wrap: balance; }
+h1 { font-size: clamp(30px, 4.4vw, 44px); font-weight: 800; letter-spacing: -0.01em; }
+h2 { font-size: 24px; font-weight: 700; }
+h3 { font-size: 16px; font-weight: 700; }
+p { margin: 0; }
+.mono { font-family: var(--f-mono); font-size: 12.5px; }
+.eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--brand); }
+.lead { color: var(--muted); max-width: 70ch; }
+section { display: flex; flex-direction: column; gap: 16px; }
+.sec-head { display: flex; flex-direction: column; gap: 6px; }
+
+/* header */
+header { display: flex; flex-direction: column; gap: 14px; }
+.title-row { display: flex; align-items: center; gap: 16px; }
+.title-row .ava { width: 64px; height: 64px; flex: none; }
+.facts { display: flex; flex-wrap: wrap; gap: 8px; }
+.fact { display: inline-flex; gap: 6px; align-items: baseline; padding: 6px 12px; border-radius: 999px; background: var(--surface); border: 1px solid var(--line); font-size: 14px; }
+.fact b { font-family: var(--f-display); font-variant-numeric: tabular-nums; }
+
+/* scenario chips */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { font: 600 14px var(--f-body); color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; cursor: pointer; }
+.chip:hover { border-color: var(--brand-2); }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.chip:focus-visible, button:focus-visible, .step:focus-visible { outline: 3px solid var(--lime); outline-offset: 2px; }
+.scn-sum { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; color: var(--muted); }
+.pill { display: inline-block; padding: 3px 10px; border-radius: 999px; font: 700 12px var(--f-body); letter-spacing: 0.04em; text-transform: uppercase; }
+.pill.ok { background: var(--good-soft); color: var(--brand); }
+.pill.help { background: var(--warn-soft); color: var(--warn); }
+
+/* simulator */
+.sim { display: grid; grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+@media (max-width: 920px) { .sim { grid-template-columns: minmax(0, 1fr); } }
+.left { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.kiosk { background: var(--kiosk); color: var(--kiosk-ink); border-radius: 22px; padding: 18px 20px 20px; display: flex; flex-direction: column; gap: 14px; min-height: 470px; }
+.k-top { display: flex; justify-content: space-between; align-items: center; color: var(--kiosk-muted); font-size: 13px; }
+.cam { display: inline-flex; align-items: center; gap: 8px; }
+.cam i { width: 10px; height: 10px; border-radius: 50%; background: var(--lime); box-shadow: 0 0 0 3px rgba(166, 211, 90, 0.25); }
+.k-stage { flex: 1; display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; align-items: center; }
+.k-stage.with-card { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); }
+@media (max-width: 560px) { .k-stage.with-card { grid-template-columns: minmax(0, 1fr); } }
+.k-ava { height: 230px; display: flex; justify-content: center; transition: transform 0.25s ease; }
+.with-card .k-ava { height: 180px; }
+.k-ava svg { width: auto !important; height: 100% !important; }
+.k-ava.bump { animation: bump 0.35s ease; }
+@keyframes bump { 0% { transform: translateY(6px) scale(0.97); } 100% { transform: none; } }
+.k-card { background: var(--kiosk-ink); color: #10302a; border-radius: 14px; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; }
+.k-card[hidden] { display: none; }
+.k-card h4 { margin: 0; font: 700 14px var(--f-display); }
+.k-row { display: grid; grid-template-columns: 9.5em minmax(0, 1fr); gap: 8px; font-size: 15px; border-top: 1px solid #dad7d0; padding-top: 6px; }
+.k-row span:first-child { color: #4f665f; }
+.k-row.ragu span:last-child { color: #b9501a; font-weight: 700; }
+.k-row.ragu span:last-child::after { content: " · perlu dicek"; font-weight: 600; font-size: 13px; }
+.subtitle { background: var(--kiosk-2); border-radius: 14px; padding: 14px 18px; font: 700 clamp(20px, 2.6vw, 27px)/1.25 var(--f-display); min-height: 2.6em; display: flex; align-items: center; }
+.spoken { display: flex; gap: 10px; align-items: flex-start; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; }
+.spoken svg { flex: none; margin-top: 3px; }
+.spoken p { font-style: italic; }
+.spoken .meta { font-style: normal; color: var(--muted); font-size: 13px; margin-top: 4px; }
+.controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+button.btn { font: 700 14px var(--f-body); border-radius: 10px; padding: 9px 14px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer; }
+button.btn.primary { background: var(--brand); color: #fff; border-color: var(--brand); }
+:root[data-theme="dark"] button.btn.primary { color: #0b1a17; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) button.btn.primary { color: #0b1a17; } }
+button.btn:disabled { opacity: 0.45; cursor: default; }
+.counter { color: var(--muted); font-size: 14px; font-variant-numeric: tabular-nums; margin-left: auto; }
+
+.right { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+ol.steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; max-height: 300px; overflow-y: auto; }
+.step { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 8px; padding: 6px 8px; border-radius: 10px; cursor: pointer; }
+.step:hover { background: var(--bg); }
+.step .n { font: 700 13px var(--f-display); color: var(--muted); font-variant-numeric: tabular-nums; padding-top: 2px; }
+.step .t { font-size: 14.5px; }
+.step .tag { color: var(--muted); }
+.step.done .n { color: var(--brand); }
+.step.now { background: var(--good-soft); }
+.step.now .n { color: var(--brand); }
+.step.future { opacity: 0.55; }
+
+.meter { display: grid; grid-template-columns: 8.6em minmax(0, 1fr) 3.2em; gap: 10px; align-items: center; font-size: 14px; }
+.bar { position: relative; height: 10px; border-radius: 99px; background: var(--bg); border: 1px solid var(--line); }
+.bar i { position: absolute; inset: 0 auto 0 0; border-radius: 99px; background: var(--brand-2); }
+.bar i.hot { background: var(--warn); }
+.bar b { position: absolute; top: -4px; bottom: -4px; width: 2px; background: var(--ink); opacity: 0.55; }
+.meter .v { text-align: right; font-variant-numeric: tabular-nums; font-weight: 700; }
+.verdict { font-size: 14.5px; }
+.verdict b { color: var(--brand); }
+.verdict .err { color: var(--warn); font-weight: 700; }
+ul.fx { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 4px; font-size: 14px; }
+ul.fx li { display: grid; grid-template-columns: 14px minmax(0, 1fr); gap: 6px; }
+ul.fx li::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--brand-2); margin-top: 8px; }
+ul.fx li.alert::before { background: var(--warn); }
+ul.fx li.alert { color: var(--warn); font-weight: 700; }
+.quiet { color: var(--muted); font-size: 14px; }
+
+/* map */
+.map { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 12px; overflow-x: auto; }
+.map svg { display: block; min-width: 980px; width: 100%; height: auto; }
+.node rect { fill: var(--bg); stroke: var(--line); stroke-width: 1.5; }
+.node text { fill: var(--ink); font: 700 13px var(--f-display); }
+.node .sub { fill: var(--muted); font: 600 11px var(--f-body); }
+.node.on rect { fill: var(--lime); stroke: var(--lime); }
+.node.on text, .node.on .sub { fill: #10302a; }
+.node.help rect { fill: var(--warn-soft); stroke: var(--warn); }
+.node.help.on rect { fill: var(--warn); stroke: var(--warn); }
+.node.help.on text, .node.help.on .sub { fill: #fff; }
+.edge { stroke: var(--brand-2); stroke-width: 2; fill: none; }
+.edge.esc { stroke: var(--warn); stroke-dasharray: 5 5; stroke-width: 1.5; opacity: 0.8; }
+.loop { fill: var(--muted); font: 600 11px var(--f-body); }
+.legend { display: flex; flex-wrap: wrap; gap: 16px; color: var(--muted); font-size: 13.5px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 26px; height: 0; border-top: 2px solid var(--brand-2); }
+.legend i.esc { border-top: 2px dashed var(--warn); }
+
+/* pipeline */
+.pipe { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 860px) { .pipe { grid-template-columns: minmax(0, 1fr); } }
+.tier { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+.tier .who { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.tier .when { font-size: 13px; color: var(--muted); }
+.tier ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; font-size: 14.5px; }
+.tier code, td code { font-family: var(--f-mono); font-size: 12.5px; background: var(--bg); padding: 1px 5px; border-radius: 5px; }
+.tier.first { border-color: var(--brand-2); }
+
+/* tables */
+.tbl { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+th, td { text-align: left; vertical-align: top; padding: 10px 14px; border-bottom: 1px solid var(--line); }
+th { font: 700 12px var(--f-body); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); background: var(--bg); }
+tr:last-child td { border-bottom: 0; }
+td.num { font-variant-numeric: tabular-nums; font-weight: 700; white-space: nowrap; }
+td.na { color: var(--muted); }
+.naskah td:nth-child(3) { font-style: italic; }
+.naskah .pose { width: 40px; height: 40px; }
+.note { font-size: 14px; color: var(--muted); max-width: 80ch; }
+footer { color: var(--muted); font-size: 14px; display: flex; flex-direction: column; gap: 6px; border-top: 1px solid var(--line); padding-top: 18px; }
+footer a { color: var(--brand); }
+@media (prefers-reduced-motion: reduce) { .k-ava.bump { animation: none; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="title-row">
+      <div class="ava" id="hdrAva" aria-hidden="true"></div>
+      <div>
+        <p class="eyebrow">APP AI · Healthkathon 2026</p>
+        <h1>Alur Sapa</h1>
+      </div>
+    </div>
+    <p class="lead">Alur percakapan kios, langkah demi langkah: apa yang diucapkan Sapa, apa yang tampil di layar, siapa yang memutuskan, dan apa yang tercatat. Semua yang tampil di sini dihasilkan dengan menjalankan kode TypeScript-nya, bukan digambar ulang.</p>
+    <div class="facts" id="facts"></div>
+  </header>
+
+  <section aria-labelledby="sim-h">
+    <div class="sec-head">
+      <h2 id="sim-h">Simulator</h2>
+      <p class="lead">Pilih skenario, lalu maju langkah demi langkah. Jev dan Claude di skenario ini adalah balasan contoh yang dipasang lewat SDK aslinya, jadi angka keyakinannya ilustrasi.</p>
+    </div>
+    <div class="chips" id="chips" role="group" aria-label="Skenario"></div>
+    <div class="scn-sum"><span id="scnText"></span><span id="scnRes"></span></div>
+    <div class="sim">
+      <div class="left">
+        <div class="kiosk" aria-live="polite">
+          <div class="k-top"><span class="cam"><i></i>OBSBOT · mikrofon aktif</span><span class="mono" id="kTag"></span></div>
+          <div class="k-stage" id="kStage">
+            <div class="k-ava" id="kAva"></div>
+            <div class="k-card" id="kCard" hidden></div>
+          </div>
+          <div class="subtitle" id="kSub"></div>
+        </div>
+        <div class="spoken">
+          <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="var(--brand)"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" stroke="var(--brand)" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+          <div><p id="kSpeak"></p><p class="meta" id="kMeta"></p></div>
+        </div>
+        <div class="controls">
+          <button class="btn" id="prev" type="button">← Sebelumnya</button>
+          <button class="btn primary" id="next" type="button">Berikutnya →</button>
+          <button class="btn" id="play" type="button" aria-pressed="false">Putar otomatis</button>
+          <span class="counter" id="counter"></span>
+        </div>
+      </div>
+      <div class="right">
+        <div class="panel">
+          <h3>Langkah</h3>
+          <ol class="steps" id="steps"></ol>
+        </div>
+        <div class="panel">
+          <h3>Di balik layar</h3>
+          <div id="brain"></div>
+          <ul class="fx" id="fx"></ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="map-h">
+    <div class="sec-head">
+      <h2 id="map-h">Peta alur</h2>
+      <p class="lead">Sembilan keadaan. Jalur hijau adalah pendaftaran mandiri; setiap keadaan punya jalan keluar ke petugas. Tidak ada keadaan "ditolak". Kotak yang menyala mengikuti simulator.</p>
+    </div>
+    <div class="map" id="map"></div>
+    <div class="legend"><span><i></i>berhasil, lanjut</span><span><i class="esc"></i>ke petugas: gagal, menolak izin, minta petugas, atau darurat</span></div>
+  </section>
+
+  <section aria-labelledby="pipe-h">
+    <div class="sec-head">
+      <h2 id="pipe-h">Cara jawaban lisan dipahami</h2>
+      <p class="lead">Jawaban pasien selalu dipetakan ke daftar opsi tertutup; tidak ada model yang mengarang kalimat untuk pasien. Ucapan disamarkan dulu: semua angka diganti <code class="mono">[angka]</code> sebelum keluar dari kios.</p>
+    </div>
+    <div class="pipe">
+      <div class="tier first">
+        <div class="who"><h3>1 · Jev (TypeSafe)</h3><span class="when">setiap giliran</span></div>
+        <p class="quiet">Model "System One": mengembalikan jawaban bertipe dengan probabilitas, tanpa teks bebas. Satu panggilan berisi tiga pertanyaan paralel.</p>
+        <ul>
+          <li><code>choice</code> opsi + <code>tidak_jelas</code>: keyakinan ≥ 0,6 diterima; 0,3–0,6 minta pendapat kedua; &lt; 0,3 tanya ulang</li>
+          <li><code>noul</code> minta petugas ≥ 0,7 → panggil petugas</li>
+          <li><code>noul</code> darurat ≥ 0,3 → petugas <b>segera</b> (sengaja peka)</li>
+        </ul>
+      </div>
+      <div class="tier">
+        <div class="who"><h3>2 · Claude Haiku 5.5</h3><span class="when">hanya saat Jev ragu</span></div>
+        <p class="quiet">Pendapat kedua lewat strict tool use: enum opsi yang sama, <code>tool_choice</code> dipaksa, hasil divalidasi ulang dengan Zod.</p>
+        <ul>
+          <li>Diterima hanya bila <b>sama</b> dengan pilihan Jev</li>
+          <li>Berbeda → tanya ulang, bukan menebak</li>
+          <li>Bila Jev tak terjangkau, Claude jadi penilai tunggal</li>
+        </ul>
+      </div>
+      <div class="tier">
+        <div class="who"><h3>3 · Kata kunci</h3><span class="when">saat keduanya putus</span></div>
+        <p class="quiet">Mode darurat tanpa AI, ditandai di audit. Kamus kecil bahasa Indonesia, Jawa, dan Sunda.</p>
+        <ul>
+          <li>Tepat satu opsi yang cocok → diterima</li>
+          <li>Nol atau dua opsi cocok ("nggak apa-apa, silakan") → tanya ulang</li>
+          <li>Kata darurat ("sesak", "nyeri dada") tetap memanggil petugas segera</li>
+        </ul>
+      </div>
+    </div>
+    <p class="note">Ambang di atas adalah nilai awal. Dokumentasi Jev menegaskan ambang harus dikalibrasi per pertanyaan dengan data sendiri; kalibrasi dilakukan dengan rekaman relawan lansia saat prototype.</p>
+  </section>
+
+  <section aria-labelledby="bukti-h">
+    <div class="sec-head">
+      <h2 id="bukti-h">Jaminan yang dibuktikan</h2>
+      <p class="lead">Typesafe berarti pelanggaran ditolak kompiler atau tertangkap uji, bukan dijanjikan di slide. Hasil terakhir: <b>pemeriksaan tipe ketat lulus, 25 dari 25 uji lulus</b>, termasuk 2 × 3.000 alur acak.</p>
+    </div>
+    <div class="tbl"><table>
+      <thead><tr><th>Jaminan</th><th>Dijaga oleh</th><th>Bukti</th></tr></thead>
+      <tbody>
+        <tr><td>Kios tidak pernah menolak pasien</td><td>Tipe <code>HasilAkhir</code> hanya punya <code>antrean_dicetak</code> dan <code>dilayani_petugas</code></td><td>Uji tipe; 3.000 alur acak selalu berakhir di salah satunya</td></tr>
+        <tr><td>Nama, NIK, dan poli tidak pernah diucapkan</td><td>Tipe <code>Ucapan</code>: <code>ucap`…`</code> hanya menerima sapaan atau angka 1–3</td><td>Tiga <code>@ts-expect-error</code>; cek setiap ucapan di 3.000 alur</td></tr>
+        <tr><td>Izin selalu lebih dulu</td><td>Kartu baru diproses setelah audit izin</td><td>Properti: identitas hanya ada bila izin sudah diberikan</td></tr>
+        <tr><td>Tidak ada putaran tanpa akhir</td><td>Batas ulang di setiap keadaan</td><td>Dari keadaan mana pun, dua kali diam selalu sampai ke petugas</td></tr>
+        <tr><td>Angka tidak keluar dari kios</td><td>Penilai hanya menerima <code>UjaranTersamar</code></td><td>Payload HTTP ke Jev dan Claude diperiksa: tidak ada deret angka</td></tr>
+        <tr><td>Claude tidak bisa mengarang opsi</td><td>Strict tool + validasi Zod + harus sama dengan Jev</td><td>Opsi di luar daftar ditolak, kios bertanya ulang</td></tr>
+        <tr><td>Keluhan darurat menang atas segalanya</td><td>Noul darurat di setiap giliran, juga di mode kata kunci</td><td>Skenario darurat; prioritas naik walau sudah menunggu petugas</td></tr>
+        <tr><td>AI tidak menulis ke SIMRS atau BPJS</td><td>Efek terjauh hanyalah <code>kirim_draf_ke_petugas</code></td><td>Tipe <code>Efek</code> tidak punya aksi tulis</td></tr>
+      </tbody>
+    </table></div>
+    <p class="note">Uji mutasi: tiga kerusakan dipasang sengaja (menambah hasil "ditolak", membuat Sapa mengucapkan nama, menghapus batas tanya ulang). Ketiganya tertangkap. Yang kedua awalnya <b>lolos</b> karena uji acak jarang sampai akhir alur; generatornya lalu dibuat kooperatif, dan kini tertangkap di dua uji.</p>
+  </section>
+
+  <section aria-labelledby="eval-h">
+    <div class="sec-head">
+      <h2 id="eval-h">Evaluasi pemahaman</h2>
+      <p class="lead">40 ujaran berlabel (bahasa sehari-hari, Jawa, Sunda, ragu-ragu, minta petugas, darurat). Metrik terpenting bagi kios adalah <b>salah-yakin</b>: jawaban salah yang langsung diterima. Salah yang berujung tanya ulang atau petugas masih aman.</p>
+    </div>
+    <div class="tbl"><table>
+      <thead><tr><th>Penilai</th><th>Benar</th><th>Salah, aman</th><th>Salah-yakin</th><th>Darurat terlewat</th></tr></thead>
+      <tbody>
+        <tr><td>Kata kunci (tanpa AI)</td><td class="num">90,0%</td><td class="num">3</td><td class="num">1</td><td class="num">0</td></tr>
+        <tr><td>Jev saja</td><td class="na" colspan="4">Belum dijalankan: butuh kunci API TypeSafe (akses Jev masih early access)</td></tr>
+        <tr><td>Jev + Claude</td><td class="na" colspan="4">Belum dijalankan: butuh kunci API TypeSafe dan Anthropic</td></tr>
+      </tbody>
+    </table></div>
+    <p class="note">Angka kata kunci terlalu optimistis: set ujaran dan kamus ditulis oleh tim yang sama, dan kamus disetel pada set ini. Gunanya sebagai garis dasar. Angka yang layak dikutip ke juri baru ada setelah set diganti transkrip relawan lansia dan dijalankan dengan <code class="mono">npm run eval</code>. Dari evaluasi ini juga lahir pemeriksaan darurat: "dada saya sakit sekali" awalnya hanya dipetakan sebagai "keperluan lain".</p>
+  </section>
+
+  <section aria-labelledby="naskah-h">
+    <div class="sec-head">
+      <h2 id="naskah-h">Naskah Sapa</h2>
+      <p class="lead">Semua kalimat yang bisa diucapkan Sapa, ditulis dan ditinjau manusia. Kompiler menolak build bila satu keadaan atau satu alasan petugas belum punya naskah.</p>
+    </div>
+    <div class="tbl"><table class="naskah">
+      <thead><tr><th>Keadaan</th><th>Pose</th><th>Diucapkan (TTS)</th><th>Subtitle</th></tr></thead>
+      <tbody id="naskah"></tbody>
+    </table></div>
+  </section>
+
+  <footer>
+    <p>Kode: proyek <span class="mono">sapa-flow</span> (TypeScript strict, Zod, <span class="mono">@typesafe-ai/sdk</span> 0.6.0, <span class="mono">@anthropic-ai/sdk</span>). Periksa ulang kapan saja dengan <span class="mono">npm run cek</span>.</p>
+    <p>Rujukan: <a href="https://docs.typesafe.ai/introduction" target="_blank" rel="noopener">Dokumentasi Jev</a> · <a href="https://docs.typesafe.ai/confidence" target="_blank" rel="noopener">Confidence &amp; ambang</a> · <a href="https://platform.claude.com/docs/en/build-with-claude/structured-outputs" target="_blank" rel="noopener">Claude structured outputs</a></p>
+  </footer>
+</div>
+
+<script>
+const SKENARIO = [{"id": "lancar", "judul": "Kontrol rutin, lancar", "ringkas": "Ibu lansia, semua langkah berhasil pada percobaan pertama.", "hasil": "antrean_dicetak", "frames": [{"peristiwa": "Pasien berdiri di depan kios", "keadaan": "SAPA_IZIN", "ucapan": "Selamat datang, Bapak/Ibu. Saya Sapa, pemandu pendaftaran. Data Bapak atau Ibu akan dipakai untuk pendaftaran hari ini. Boleh saya lanjutkan?", "subtitle": "Boleh saya bantu daftar? Jawab: ya / tidak", "ekspresi": "menyapa", "tempo": 0.85, "kartu": null, "efek": [], "jejak": null}, {"peristiwa": "Pasien: “iya, boleh”", "keadaan": "MINTA_KARTU", "ucapan": "Terima kasih. Silakan letakkan kartu BPJS atau KTP di kotak yang menyala.", "subtitle": "Letakkan kartu BPJS / KTP di kotak yang menyala", "ekspresi": "memandu", "tempo": 0.9, "kartu": null, "efek": ["audit: jawaban izin → pasti via jev", "audit: izin diberikan (bercap waktu)", "lampu pemindai menyala"], "jejak": {"jev": {"opsi": "ya", "keyakinan": 0.93, "pMintaPetugas": 0.02, "pDarurat": 0.01}}}, {"peristiwa": "Kartu JKN dipindai", "keadaan": "VERIFIKASI_WAJAH", "ucapan": "Terima kasih, Ibu. Sekarang lihat ke kamera di atas layar, ya.", "subtitle": "Lihat ke kamera di atas layar", "ekspresi": "memandu", "tempo": 0.9, "kartu": null, "efek": ["lampu pemindai padam", "lampu wajah menyala", "OBSBOT: bingkai wajah otomatis"], "jejak": null}, {"peristiwa": "FRISTA 1:1: cocok", "keadaan": "TANYA_KUNJUNGAN", "ucapan": "Wajah sudah cocok, terima kasih. Hari ini Ibu mau kontrol, atau membawa rujukan baru?", "subtitle": "Kontrol, atau bawa rujukan baru?", "ekspresi": "mendengar", "tempo": 0.9, "kartu": null, "efek": ["audit: FRISTA cocok (percobaan 1)", "lampu wajah padam"], "jejak": null}, {"peristiwa": "Pasien: “kontrol rutin, Nak, tiap bulan”", "keadaan": "SCAN_DOKUMEN", "ucapan": "Silakan letakkan surat kontrol di kotak yang menyala.", "subtitle": "Letakkan surat kontrol di kotak yang menyala", "ekspresi": "memandu", "tempo": 0.9, "kartu": null, "efek": ["audit: jawaban kunjungan → pasti via jev", "lampu pemindai menyala"], "jejak": {"jev": {"opsi": "kontrol", "keyakinan": 0.9, "pMintaPetugas": 0.02, "pDarurat": 0.01}}}, {"peristiwa": "Surat kontrol dipindai", "keadaan": "KONFIRMASI_DATA", "ucapan": "Data kunjungan Ibu ada di layar. Sudah betul?", "subtitle": "Data di layar sudah betul? Jawab: ya / tidak", "ekspresi": "mendengar", "tempo": 0.9, "kartu": {"judul": "Data kunjungan hari ini", "baris": [{"label": "Nama", "nilai": "Siti Aminah", "ragu": false}, {"label": "Tanggal lahir", "nilai": "1955-01-01", "ragu": false}, {"label": "Kunjungan", "nilai": "Kontrol", "ragu": false}, {"label": "Poli tujuan", "nilai": "penyakit dalam", "ragu": false}, {"label": "Rujukan berlaku s.d.", "nilai": "2026-12-31", "ragu": false}]}, "efek": ["lampu pemindai padam"], "jejak": null}, {"peristiwa": "Pasien: “sudah, sudah bener”", "keadaan": "MENUNGGU_PETUGAS_CEK", "ucapan": "Terima kasih. Petugas sedang memeriksa sebentar, ya.", "subtitle": "Petugas sedang memeriksa sebentar…", "ekspresi": "senang", "tempo": 0.9, "kartu": {"judul": "Data kunjungan hari ini", "baris": [{"label": "Nama", "nilai": "Siti Aminah", "ragu": false}, {"label": "Tanggal lahir", "nilai": "1955-01-01", "ragu": false}, {"label": "Kunjungan", "nilai": "Kontrol", "ragu": false}, {"label": "Poli tujuan", "nilai": "penyakit dalam", "ragu": false}, {"label": "Rujukan berlaku s.d.", "nilai": "2026-12-31", "ragu": false}]}, "efek": ["audit: jawaban konfirmasi → pasti via jev", "draf ke dashboard petugas"], "jejak": {"jev": {"opsi": "ya", "keyakinan": 0.94, "pMintaPetugas": 0.02, "pDarurat": 0.01}}}, {"peristiwa": "Petugas menyetujui di dashboard", "keadaan": "SELESAI", "ucapan": "Ini nomor antrean Ibu. Semua keterangan ada di struk. Semoga lekas sehat.", "subtitle": "Ambil struk antrean di bawah. Semoga lekas sehat!", "ekspresi": "senang", "tempo": 0.9, "kartu": null, "efek": ["audit: petugas setuju", "cetak struk antrean"], "jejak": null}]}, {"id": "wajah", "judul": "Wajah sulit terbaca", "ringkas": "Ruang gelap lalu terlalu jauh; kios memandu. Rujukan menulis “Achmad Sudjono” (dianggap ejaan lain, aman) tapi sudah kedaluwarsa, jadi ditandai.", "hasil": "dilayani_petugas", "frames": [{"peristiwa": "Pasien berdiri di depan kios", "keadaan": "SAPA_IZIN", "ucapan": "Selamat datang, Bapak/Ibu. Saya Sapa, pemandu pendaftaran. Data Bapak atau Ibu akan dipakai untuk pendaftaran hari ini. Boleh saya lanjutkan?", "subtitle": "Boleh saya bantu daftar? Jawab: ya / tidak", "ekspresi": "menyapa", "tempo": 0.85, "kartu": null, "efek": [], "jejak": null}, {"peristiwa": "Pasien: “nggih, monggo”", "keadaan": "MINTA_KARTU", "ucapan": "Terima kasih. Silakan letakkan kartu BPJS atau KTP di kotak yang menyala.", "subtitle": "Letakkan kartu BPJS / KTP di kotak yang menyala", "ekspresi": "memandu", "tempo": 0.9, "kartu": null, "efek": ["audit: jawaban izin → pasti via jev", "audit: izin diberikan (bercap waktu)", "lampu pemindai menyala"], "jejak": {"jev": {"opsi": "ya", "keyakinan": 0.88, "pMintaPetugas": 0.02, "pDarurat": 0.01}}}, {"peristiwa": "KTP dipindai", "keadaan": "VERIFIKASI_WAJAH", "ucapan": "Terima kasih, Bapak. Sekarang lihat ke kamera di atas layar, ya.", "subtitle": "Lihat ke kamera di atas layar", "ekspresi": "memandu", "tempo": 0.9, "kartu": null, "efek": ["lampu pemindai padam", "lampu wajah menyala", "OBSBOT: bingkai wajah otomatis"], "jejak": null}, {"peristiwa": "FRISTA: wajah tak terdeteksi (gelap)", "keadaan": "VERIFIKASI_WAJAH", "ucapan": "Saya terangkan lampunya. Lihat ke kamera sekali lagi, ya.", "subtitle": "Lampu diterangkan. Lihat ke kamera lagi", "ekspresi": "memandu", "tempo": 0.85, "kartu": null, "efek": ["audit: FRISTA wajah tidak terdeteksi (percobaan 1)", "lampu pemindai padam", "lampu wajah menyala", "OBSBOT: naikkan eksposur"], "jejak": null}, {"peristiwa": "FRISTA: wajah tak terdeteksi (terlalu jauh)", "keadaan": "VERIFIKASI_WAJAH", "ucapan": "Sedikit maju, Bapak. Ya, begitu. Tahan sebentar.", "subtitle": "Sedikit maju… tahan sebentar", "ekspresi": "memandu", "tempo": 0.85, "kartu": null, "efek": ["audit: FRISTA wajah tidak terdeteksi (percobaan 2)", "lampu pemindai padam", "lampu wajah menyala", "OBSBOT: bingkai wajah otomatis"], "jejak": null}, {"peristiwa": "FRISTA 1:1: cocok", "keadaan": "TANYA_KUNJUNGAN", "ucapan": "Wajah sudah cocok, terima kasih. Hari ini Bapak mau kontrol, atau membawa rujukan baru?", "subtitle": "Kontrol, atau bawa rujukan baru?", "ekspresi": "mendengar", "tempo": 0.9, "kartu": null, "efek": ["audit: FRISTA cocok (percobaan 3)", "lampu wajah padam"], "jejak": null}, {"peristiwa": "Pasien: “bawa surat dari puskesmas”", "keadaan": "SCAN_DOKUMEN", "ucapan": "Silakan letakkan surat rujukan dari puskesmas atau klinik di kotak yang menyala.", "subtitle": "Letakkan surat rujukan di kotak yang menyala", "ekspresi": "memandu", "tempo": 0.9, "kartu": null, "efek": ["audit: jawaban kunjungan → pasti via jev", "lampu pemindai menyala"], "jejak": {"jev": {"opsi": "rujukan_baru", "keyakinan": 0.91, "pMintaPetugas": 0.02, "pDarurat": 0.01}}}, {"peristiwa": "Rujukan dipindai (ejaan nama lain, berlaku s.d. 1 Okt)", "keadaan": "KONFIRMASI_DATA", "ucapan": "Data kunjungan Bapak ada di layar. Sudah betul?", "subtitle": "Data di layar sudah betul? Jawab: ya / tidak", "ekspresi": "mendengar", "tempo": 0.9, "kartu": {"judul": "Data kunjungan hari ini", "baris": [{"label": "Nama", "nilai": "Ahmad Sujono", "ragu": false}, {"label": "Tanggal lahir", "nilai": "1948-02-02", "ragu": false}, {"label": "Kunjungan", "nilai": "Rujukan baru", "ragu": false}, {"label": "Poli tujuan", "nilai": "penyakit dalam", "ragu": false}, {"label": "Rujukan berlaku s.d.", "nilai": "2026-10-01", "ragu": true}]}, "efek": ["audit: bendera rujukan_kedaluwarsa", "lampu pemindai padam"], "jejak": null}, {"peristiwa": "Pasien: “sudah, sudah bener”", "keadaan": "MENUNGGU_PETUGAS_CEK", "ucapan": "Terima kasih. Petugas sedang memeriksa sebentar, ya.", "subtitle": "Petugas sedang memeriksa sebentar…", "ekspresi": "senang", "tempo": 0.9, "kartu": {"judul": "Data kunjungan hari ini", "baris": [{"label": "Nama", "nilai": "Ahmad Sujono", "ragu": false}, {"label": "Tanggal lahir", "nilai": "1948-02-02", "ragu": false}, {"label": "Kunjungan", "nilai": "Rujukan baru", "ragu": false}, {"label": "Poli tujuan", "nilai": "penyakit dalam", "ragu": false}, {"label": "Rujukan berlaku s.d.", "nilai": "2026-10-01", "ragu": true}]}, "efek": ["audit: jawaban konfirmasi → pasti via jev", "draf ke dashboard petugas · 1 bendera"], "jejak": {"jev": {"opsi": "ya", "keyakinan": 0.94, "pMintaPetugas": 0.02, "pDarurat": 0.01}}}, {"peristiwa": "Petugas memeriksa bendera, lalu mengambil alih", "keadaan": "SELESAI", "ucapan": "Petugas sudah di sini. Semoga lekas sehat, Bapak.", "subtitle": "Petugas sudah di sini. Semoga lekas sehat!", "ekspresi": "senang", "tempo": 0.9, "kartu": null, "efek": ["audit: petugas ambil alih"], "jejak": null}]}, {"id": "jawa", "judul": "Bahasa Jawa, Jev ragu", "ringkas": "Keyakinan Jev 0,47 (pita tengah), jadi Claude dimintai pendapat kedua dan setuju.", "hasil": "antrean_dicetak", "frames": [{"peristiwa": "Pasien berdiri di depan kios", "keadaan": "SAPA_IZIN", "ucapan": "Selamat datang, Bapak/Ibu. Saya Sapa, pemandu pendaftaran. Data Bapak atau Ibu akan dipakai untuk pendaftaran hari ini. Boleh saya lanjutkan?", "subtitle": "Boleh saya bantu daftar? Jawab: ya / tidak", "ekspresi": "menyapa", "tempo": 0.85, "kartu": null, "efek": [], "jejak": null}, {"peristiwa": "Pasien: “nggih, monggo”", "keadaan": "MINTA_KARTU", "ucapan": "Terima kasih. Silakan letakkan kartu BPJS atau KTP di kotak yang menyala.", "subtitle": "Letakkan kartu BPJS / KTP di kotak yang menyala", "ekspresi": "memandu", "tempo": 0.9, "kartu": null, "efek": ["audit: jawaban izin → pasti via jev", "audit: izin diberikan (bercap waktu)", "lampu pemindai menyala"], "jejak": {"jev": {"opsi": "ya", "keyakinan": 0.88, "pMintaPetugas": 0.02, "pDarurat": 0.01}}}, {"peristiwa": "KTP dipindai", "keadaan": "VERIFIKASI_WAJAH", "ucapan": "Terima kasih, Bapak. Sekarang lihat ke kamera di atas layar, ya.", "subtitle": "Lihat ke kamera di atas layar", "ekspresi": "memandu", "tempo": 0.9, "kartu": null, "efek": ["lampu pemindai padam", "lampu wajah menyala", "OBSBOT: bingkai wajah otomatis"], "jejak": null}, {"peristiwa": "FRISTA 1:1: cocok", "keadaan": "TANYA_KUNJUNGAN", "ucapan": "Wajah sudah cocok, terima kasih. Hari ini Bapak mau kontrol, atau membawa rujukan baru?", "subtitle": "Kontrol, atau bawa rujukan baru?", "ekspresi": "mendengar", "tempo": 0.9, "kartu": null, "efek": ["audit: FRISTA cocok (percobaan 1)", "lampu wajah padam"], "jejak": null}, {"peristiwa": "Pasien: “kulo ajeng kontrol teng dokter dalem”", "keadaan": "SCAN_DOKUMEN", "ucapan": "Silakan letakkan surat kontrol di kotak yang menyala.", "subtitle": "Letakkan surat kontrol di kotak yang menyala", "ekspresi": "memandu", "tempo": 0.9, "kartu": null, "efek": ["audit: jawaban kunjungan → pasti via jev+claude", "lampu pemindai menyala"], "jejak": {"jev": {"opsi": "kontrol", "keyakinan": 0.47, "pMintaPetugas": 0.02, "pDarurat": 0.01}, "claude": {"opsi": "kontrol", "mintaPetugas": false, "darurat": false}}}, {"peristiwa": "Surat kontrol dipindai", "keadaan": "KONFIRMASI_DATA", "ucapan": "Data kunjungan Bapak ada di layar. Sudah betul?", "subtitle": "Data di layar sudah betul? Jawab: ya / tidak", "ekspresi": "mendengar", "tempo": 0.9, "kartu": {"judul": "Data kunjungan hari ini", "baris": [{"label": "Nama", "nilai": "Ahmad Sujono", "ragu": false}, {"label": "Tanggal lahir", "nilai": "1948-02-02", "ragu": false}, {"label": "Kunjungan", "nilai": "Kontrol", "ragu": false}, {"label": "Poli tujuan", "nilai": "penyakit dalam", "ragu": false}, {"label": "Rujukan berlaku s.d.", "nilai": "2026-12-31", "ragu": false}]}, "efek": ["lampu pemindai padam"], "jejak": null}, {"peristiwa": "Pasien: “sudah, sudah bener”", "keadaan": "MENUNGGU_PETUGAS_CEK", "ucapan": "Terima kasih. Petugas sedang memeriksa sebentar, ya.", "subtitle": "Petugas sedang memeriksa sebentar…", "ekspresi": "senang", "tempo": 0.9, "kartu": {"judul": "Data kunjungan hari ini", "baris": [{"label": "Nama", "nilai": "Ahmad Sujono", "ragu": false}, {"label": "Tanggal lahir", "nilai": "1948-02-02", "ragu": false}, {"label": "Kunjungan", "nilai": "Kontrol", "ragu": false}, {"label": "Poli tujuan", "nilai": "penyakit dalam", "ragu": false}, {"label": "Rujukan berlaku s.d.", "nilai": "2026-12-31", "ragu": false}]}, "efek": ["audit: jawaban konfirmasi → pasti via jev", "draf ke dashboard petugas"], "jejak": {"jev": {"opsi": "ya", "keyakinan": 0.94, "pMintaPetugas": 0.02, "pDarurat": 0.01}}}, {"peristiwa": "Petugas menyetujui", "keadaan": "SELESAI", "ucapan": "Ini nomor antrean Bapak. Semua keterangan ada di struk. Semoga lekas sehat.", "subtitle": "Ambil struk antrean di bawah. Semoga lekas sehat!", "ekspresi": "senang", "tempo": 0.9, "kartu": null, "efek": ["audit: petugas setuju", "cetak struk antrean"], "jejak": null}]}, {"id": "tidakcocok", "judul": "Wajah tidak cocok", "ringkas": "FRISTA dua kali tidak cocok: petugas dipanggil, tercatat untuk deteksi. Pasien tetap dilayani.", "hasil": "dilayani_petugas", "frames": [{"peristiwa": "Pasien berdiri di depan kios", "keadaan": "SAPA_IZIN", "ucapan": "Selamat datang, Bapak/Ibu. Saya Sapa, pemandu pendaftaran. Data Bapak atau Ibu akan dipakai untuk pendaftaran hari ini. Boleh saya lanjutkan?", "subtitle": "Boleh saya bantu daftar? Jawab: ya / tidak", "ekspresi": "menyapa", "tempo": 0.85, "kartu": null, "efek": [], "jejak": null}, {"peristiwa": "Pasien: “iya, boleh”", "keadaan": "MINTA_KARTU", "ucapan": "Terima kasih. Silakan letakkan kartu BPJS atau KTP di kotak yang menyala.", "subtitle": "Letakkan kartu BPJS / KTP di kotak yang menyala", "ekspresi": "memandu", "tempo": 0.9, "kartu": null, "efek": ["audit: jawaban izin → pasti via jev", "audit: izin diberikan (bercap waktu)", "lampu pemindai menyala"], "jejak": {"jev": {"opsi": "ya", "keyakinan": 0.93, "pMintaPetugas": 0.02, "pDarurat": 0.01}}}, {"peristiwa": "Kartu JKN dipindai", "keadaan": "VERIFIKASI_WAJAH", "ucapan": "Terima kasih, Ibu. Sekarang lihat ke kamera di atas layar, ya.", "subtitle": "Lihat ke kamera di atas layar", "ekspresi": "memandu", "tempo": 0.9, "kartu": null, "efek": ["lampu pemindai padam", "lampu wajah menyala", "OBSBOT: bingkai wajah otomatis"], "jejak": null}, {"peristiwa": "FRISTA 1:1: tidak cocok", "keadaan": "VERIFIKASI_WAJAH", "ucapan": "Kita coba sekali lagi. Lihat lurus ke kamera, ya.", "subtitle": "Coba lagi: lihat lurus ke kamera", "ekspresi": "memandu", "tempo": 0.85, "kartu": null, "efek": ["audit: FRISTA tidak cocok (percobaan 1)", "lampu pemindai padam", "lampu wajah menyala", "OBSBOT: bingkai wajah otomatis"], "jejak": null}, {"peristiwa": "FRISTA 1:1: tidak cocok lagi", "keadaan": "MEMANGGIL_PETUGAS", "ucapan": "Tidak apa-apa. Petugas segera datang untuk membantu verifikasi.", "subtitle": "Petugas segera datang membantu", "ekspresi": "petugas", "tempo": 0.85, "kartu": null, "efek": ["audit: FRISTA tidak cocok (percobaan 2)", "audit: eskalasi dari VERIFIKASI_WAJAH", "panggil petugas (frista tidak cocok)", "draf ke dashboard petugas"], "jejak": null}, {"peristiwa": "Petugas tiba", "keadaan": "SELESAI", "ucapan": "Petugas sudah di sini. Semoga lekas sehat, Ibu.", "subtitle": "Petugas sudah di sini. Semoga lekas sehat!", "ekspresi": "senang", "tempo": 0.9, "kartu": null, "efek": ["audit: petugas tiba"], "jejak": null}]}, {"id": "darurat", "judul": "Keluhan darurat", "ringkas": "Pasien menyebut nyeri dada. Noul darurat Jev 0,78: petugas dipanggil segera.", "hasil": "dilayani_petugas", "frames": [{"peristiwa": "Pasien berdiri di depan kios", "keadaan": "SAPA_IZIN", "ucapan": "Selamat datang, Bapak/Ibu. Saya Sapa, pemandu pendaftaran. Data Bapak atau Ibu akan dipakai untuk pendaftaran hari ini. Boleh saya lanjutkan?", "subtitle": "Boleh saya bantu daftar? Jawab: ya / tidak", "ekspresi": "menyapa", "tempo": 0.85, "kartu": null, "efek": [], "jejak": null}, {"peristiwa": "Pasien: “iya, boleh”", "keadaan": "MINTA_KARTU", "ucapan": "Terima kasih. Silakan letakkan kartu BPJS atau KTP di kotak yang menyala.", "subtitle": "Letakkan kartu BPJS / KTP di kotak yang menyala", "ekspresi": "memandu", "tempo": 0.9, "kartu": null, "efek": ["audit: jawaban izin → pasti via jev", "audit: izin diberikan (bercap waktu)", "lampu pemindai menyala"], "jejak": {"jev": {"opsi": "ya", "keyakinan": 0.93, "pMintaPetugas": 0.02, "pDarurat": 0.01}}}, {"peristiwa": "Kartu JKN dipindai", "keadaan": "VERIFIKASI_WAJAH", "ucapan": "Terima kasih, Ibu. Sekarang lihat ke kamera di atas layar, ya.", "subtitle": "Lihat ke kamera di atas layar", "ekspresi": "memandu", "tempo": 0.9, "kartu": null, "efek": ["lampu pemindai padam", "lampu wajah menyala", "OBSBOT: bingkai wajah otomatis"], "jejak": null}, {"peristiwa": "FRISTA 1:1: cocok", "keadaan": "TANYA_KUNJUNGAN", "ucapan": "Wajah sudah cocok, terima kasih. Hari ini Ibu mau kontrol, atau membawa rujukan baru?", "subtitle": "Kontrol, atau bawa rujukan baru?", "ekspresi": "mendengar", "tempo": 0.9, "kartu": null, "efek": ["audit: FRISTA cocok (percobaan 1)", "lampu wajah padam"], "jejak": null}, {"peristiwa": "Pasien: “kontrol, tapi dada saya sakit sekali”", "keadaan": "MEMANGGIL_PETUGAS", "ucapan": "Saya panggilkan petugas sekarang juga. Silakan duduk dulu, ya.", "subtitle": "Petugas dipanggil SEKARANG. Silakan duduk dulu", "ekspresi": "petugas", "tempo": 0.85, "kartu": null, "efek": ["audit: jawaban kunjungan → darurat", "audit: eskalasi dari TANYA_KUNJUNGAN", "panggil petugas (kemungkinan darurat) · SEGERA", "draf ke dashboard petugas"], "jejak": {"jev": {"opsi": "kontrol", "keyakinan": 0.81, "pMintaPetugas": 0.02, "pDarurat": 0.78}}}, {"peristiwa": "Petugas tiba", "keadaan": "SELESAI", "ucapan": "Petugas sudah di sini. Semoga lekas sehat, Ibu.", "subtitle": "Petugas sudah di sini. Semoga lekas sehat!", "ekspresi": "senang", "tempo": 0.9, "kartu": null, "efek": ["audit: petugas tiba"], "jejak": null}]}, {"id": "putus", "judul": "Internet putus", "ringkas": "Jev dan Claude tak terjangkau. Kata kunci memahami “nggih”, lalu dua jawaban kabur berujung ke petugas.", "hasil": "dilayani_petugas", "frames": [{"peristiwa": "Pasien berdiri di depan kios", "keadaan": "SAPA_IZIN", "ucapan": "Selamat datang, Bapak/Ibu. Saya Sapa, pemandu pendaftaran. Data Bapak atau Ibu akan dipakai untuk pendaftaran hari ini. Boleh saya lanjutkan?", "subtitle": "Boleh saya bantu daftar? Jawab: ya / tidak", "ekspresi": "menyapa", "tempo": 0.85, "kartu": null, "efek": [], "jejak": null}, {"peristiwa": "Pasien: “nggih, monggo”", "keadaan": "MINTA_KARTU", "ucapan": "Terima kasih. Silakan letakkan kartu BPJS atau KTP di kotak yang menyala.", "subtitle": "Letakkan kartu BPJS / KTP di kotak yang menyala", "ekspresi": "memandu", "tempo": 0.9, "kartu": null, "efek": ["audit: jawaban izin → pasti via kata_kunci", "audit: izin diberikan (bercap waktu)", "lampu pemindai menyala"], "jejak": {"jev": {"galat": "InternalServerError: 503 service unavailable"}, "claude": {"galat": "InternalServerError: 529 {\"type\":\"error\",\"error\":{\"type\":\"overloaded_error\",\"message\":\"overloaded\"}}"}, "kataKunci": {"opsi": "ya", "darurat": false}}}, {"peristiwa": "KTP dipindai", "keadaan": "VERIFIKASI_WAJAH", "ucapan": "Terima kasih, Bapak. Sekarang lihat ke kamera di atas layar, ya.", "subtitle": "Lihat ke kamera di atas layar", "ekspresi": "memandu", "tempo": 0.9, "kartu": null, "efek": ["lampu pemindai padam", "lampu wajah menyala", "OBSBOT: bingkai wajah otomatis"], "jejak": null}, {"peristiwa": "FRISTA 1:1: cocok", "keadaan": "TANYA_KUNJUNGAN", "ucapan": "Wajah sudah cocok, terima kasih. Hari ini Bapak mau kontrol, atau membawa rujukan baru?", "subtitle": "Kontrol, atau bawa rujukan baru?", "ekspresi": "mendengar", "tempo": 0.9, "kartu": null, "efek": ["audit: FRISTA cocok (percobaan 1)", "lampu wajah padam"], "jejak": null}, {"peristiwa": "Pasien: “hmm, yang biasa itu lho”", "keadaan": "TANYA_KUNJUNGAN", "ucapan": "Maaf, boleh diulang? Kontrol, atau rujukan baru?", "subtitle": "Kontrol, atau rujukan baru?", "ekspresi": "mendengar", "tempo": 0.85, "kartu": null, "efek": ["audit: jawaban kunjungan → tanya_ulang"], "jejak": {"jev": {"galat": "InternalServerError: 503 service unavailable"}, "claude": {"galat": "InternalServerError: 529 {\"type\":\"error\",\"error\":{\"type\":\"overloaded_error\",\"message\":\"overloaded\"}}"}, "kataKunci": {"opsi": "tidak_jelas", "darurat": false}}}, {"peristiwa": "Pasien: “ya itu tadi”", "keadaan": "MEMANGGIL_PETUGAS", "ucapan": "Maaf, sistem saya sedang lambat. Petugas segera datang membantu.", "subtitle": "Petugas segera datang membantu", "ekspresi": "petugas", "tempo": 0.85, "kartu": null, "efek": ["audit: jawaban kunjungan → tanya_ulang", "audit: eskalasi dari TANYA_KUNJUNGAN", "panggil petugas (layanan ai terputus)", "draf ke dashboard petugas"], "jejak": {"jev": {"galat": "InternalServerError: 503 service unavailable"}, "claude": {"galat": "InternalServerError: 529 {\"type\":\"error\",\"error\":{\"type\":\"overloaded_error\",\"message\":\"overloaded\"}}"}, "kataKunci": {"opsi": "tidak_jelas", "darurat": false}}}, {"peristiwa": "Petugas tiba", "keadaan": "SELESAI", "ucapan": "Petugas sudah di sini. Semoga lekas sehat, Bapak.", "subtitle": "Petugas sudah di sini. Semoga lekas sehat!", "ekspresi": "senang", "tempo": 0.9, "kartu": null, "efek": ["audit: petugas tiba"], "jejak": null}]}, {"id": "tolak", "judul": "Izin ditolak", "ringkas": "Pasien tidak mau datanya diproses mesin: kios tidak menyentuh kartu, petugas melayani.", "hasil": "dilayani_petugas", "frames": [{"peristiwa": "Pasien berdiri di depan kios", "keadaan": "SAPA_IZIN", "ucapan": "Selamat datang, Bapak/Ibu. Saya Sapa, pemandu pendaftaran. Data Bapak atau Ibu akan dipakai untuk pendaftaran hari ini. Boleh saya lanjutkan?", "subtitle": "Boleh saya bantu daftar? Jawab: ya / tidak", "ekspresi": "menyapa", "tempo": 0.85, "kartu": null, "efek": [], "jejak": null}, {"peristiwa": "Pasien: “nggak usah, saya ke loket aja”", "keadaan": "MEMANGGIL_PETUGAS", "ucapan": "Baik, tidak apa-apa. Petugas akan membantu langsung, ya.", "subtitle": "Petugas segera datang membantu", "ekspresi": "petugas", "tempo": 0.85, "kartu": null, "efek": ["audit: jawaban izin → pasti via jev", "audit: izin ditolak (bercap waktu)", "audit: eskalasi dari SAPA_IZIN", "panggil petugas (izin ditolak)", "draf ke dashboard petugas"], "jejak": {"jev": {"opsi": "tidak", "keyakinan": 0.86, "pMintaPetugas": 0.02, "pDarurat": 0.01}}}, {"peristiwa": "Petugas tiba", "keadaan": "SELESAI", "ucapan": "Petugas sudah di sini. Semoga lekas sehat, Bapak/Ibu.", "subtitle": "Petugas sudah di sini. Semoga lekas sehat!", "ekspresi": "senang", "tempo": 0.9, "kartu": null, "efek": ["audit: petugas tiba"], "jejak": null}]}];
+const AVATAR = {"menyapa": "<svg xmlns=\"http://www.w3.org/2000/svg\" aria-label=\"Sapa melambaikan tangan sambil tersenyum\" viewBox=\"-24 -6 248 206\" style=\"width:100%; height:100%\"><ellipse cx=\"100\" cy=\"193\" rx=\"58\" ry=\"5\" fill=\"#10302A\" opacity=\".12\"/><path d=\"M188 62 l8 -8\" stroke=\"#F0A162\" stroke-width=\"4\" stroke-linecap=\"round\"/><path d=\"M196 76 l9 -2\" stroke=\"#F0A162\" stroke-width=\"4\" stroke-linecap=\"round\"/><path d=\"M40 150 Q26 164 30 180\" stroke=\"#1E9A6E\" stroke-width=\"14\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M160 140 Q184 120 180 88\" stroke=\"#1E9A6E\" stroke-width=\"14\" fill=\"none\" stroke-linecap=\"round\"/><circle cx=\"180\" cy=\"84\" r=\"9\" fill=\"#1E9A6E\"/><g transform=\"rotate(0 100 190)\"><path d=\"M38 190 V98 A62 62 0 0 1 162 98 V190 Z\" fill=\"#1E9A6E\"/><path d=\"M54 190 V102 A46 46 0 0 1 146 102 V190 Z\" fill=\"#A6D35A\"/><path d=\"M72 112 Q82 100 92 112\" stroke=\"#10302A\" stroke-width=\"6\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M108 112 Q118 100 128 112\" stroke=\"#10302A\" stroke-width=\"6\" fill=\"none\" stroke-linecap=\"round\"/><circle cx=\"68\" cy=\"130\" r=\"7\" fill=\"#F0A162\" opacity=\".75\"/><circle cx=\"132\" cy=\"130\" r=\"7\" fill=\"#F0A162\" opacity=\".75\"/><path d=\"M86 132 Q100 152 114 132 Z\" fill=\"#10302A\"/><path d=\"M92 141 Q100 148 108 141\" fill=\"#F0A162\"/></g></svg>", "mendengar": "<svg xmlns=\"http://www.w3.org/2000/svg\" aria-label=\"Sapa memiringkan kepala dan mendengarkan, dengan gelombang suara di samping\" viewBox=\"-24 -6 248 206\" style=\"width:100%; height:100%\"><ellipse cx=\"100\" cy=\"193\" rx=\"58\" ry=\"5\" fill=\"#10302A\" opacity=\".12\"/><path d=\"M30 84 q-10 26 0 52\" stroke=\"#17724F\" stroke-width=\"4\" fill=\"none\" stroke-linecap=\"round\" opacity=\"1.0\"/><path d=\"M18 76 q-16 34 0 68\" stroke=\"#17724F\" stroke-width=\"4\" fill=\"none\" stroke-linecap=\"round\" opacity=\"0.7\"/><path d=\"M6 68 q-22 42 0 84\" stroke=\"#17724F\" stroke-width=\"4\" fill=\"none\" stroke-linecap=\"round\" opacity=\"0.4\"/><path d=\"M40 150 Q26 164 30 180\" stroke=\"#1E9A6E\" stroke-width=\"14\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M160 150 Q174 164 170 180\" stroke=\"#1E9A6E\" stroke-width=\"14\" fill=\"none\" stroke-linecap=\"round\"/><g transform=\"rotate(-5 100 190)\"><path d=\"M38 190 V98 A62 62 0 0 1 162 98 V190 Z\" fill=\"#1E9A6E\"/><path d=\"M54 190 V102 A46 46 0 0 1 146 102 V190 Z\" fill=\"#A6D35A\"/><ellipse cx=\"82\" cy=\"110\" rx=\"9\" ry=\"11\" fill=\"#FBFBF8\"/><circle cx=\"79\" cy=\"111\" r=\"5.5\" fill=\"#10302A\"/><circle cx=\"81\" cy=\"109\" r=\"1.8\" fill=\"#FBFBF8\"/><ellipse cx=\"118\" cy=\"110\" rx=\"9\" ry=\"11\" fill=\"#FBFBF8\"/><circle cx=\"115\" cy=\"111\" r=\"5.5\" fill=\"#10302A\"/><circle cx=\"117\" cy=\"109\" r=\"1.8\" fill=\"#FBFBF8\"/><circle cx=\"68\" cy=\"130\" r=\"7\" fill=\"#F0A162\" opacity=\".75\"/><circle cx=\"132\" cy=\"130\" r=\"7\" fill=\"#F0A162\" opacity=\".75\"/><path d=\"M90 134 Q100 142 110 134\" stroke=\"#10302A\" stroke-width=\"5\" fill=\"none\" stroke-linecap=\"round\"/></g></svg>", "memandu": "<svg xmlns=\"http://www.w3.org/2000/svg\" aria-label=\"Sapa menunjuk ke kamera di atas sambil tersenyum\" viewBox=\"-24 -6 248 206\" style=\"width:100%; height:100%\"><ellipse cx=\"100\" cy=\"193\" rx=\"58\" ry=\"5\" fill=\"#10302A\" opacity=\".12\"/><rect x=\"112\" y=\"4\" width=\"44\" height=\"26\" rx=\"9\" fill=\"#10302A\"/><circle cx=\"134\" cy=\"17\" r=\"8\" fill=\"#3E4F4A\"/><circle cx=\"134\" cy=\"17\" r=\"3.5\" fill=\"#A6D35A\"/><path d=\"M150 40 l6 8\" stroke=\"#F0A162\" stroke-width=\"4\" stroke-linecap=\"round\"/><path d=\"M40 150 Q26 164 30 180\" stroke=\"#1E9A6E\" stroke-width=\"14\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M160 132 Q178 104 172 66\" stroke=\"#1E9A6E\" stroke-width=\"14\" fill=\"none\" stroke-linecap=\"round\"/><circle cx=\"172\" cy=\"62\" r=\"9\" fill=\"#1E9A6E\"/><g transform=\"rotate(0 100 190)\"><path d=\"M38 190 V98 A62 62 0 0 1 162 98 V190 Z\" fill=\"#1E9A6E\"/><path d=\"M54 190 V102 A46 46 0 0 1 146 102 V190 Z\" fill=\"#A6D35A\"/><ellipse cx=\"82\" cy=\"110\" rx=\"9\" ry=\"11\" fill=\"#FBFBF8\"/><circle cx=\"85\" cy=\"107\" r=\"5.5\" fill=\"#10302A\"/><circle cx=\"87\" cy=\"105\" r=\"1.8\" fill=\"#FBFBF8\"/><ellipse cx=\"118\" cy=\"110\" rx=\"9\" ry=\"11\" fill=\"#FBFBF8\"/><circle cx=\"121\" cy=\"107\" r=\"5.5\" fill=\"#10302A\"/><circle cx=\"123\" cy=\"105\" r=\"1.8\" fill=\"#FBFBF8\"/><circle cx=\"68\" cy=\"130\" r=\"7\" fill=\"#F0A162\" opacity=\".75\"/><circle cx=\"132\" cy=\"130\" r=\"7\" fill=\"#F0A162\" opacity=\".75\"/><path d=\"M86 132 Q100 152 114 132 Z\" fill=\"#10302A\"/><path d=\"M92 141 Q100 148 108 141\" fill=\"#F0A162\"/></g></svg>", "petugas": "<svg xmlns=\"http://www.w3.org/2000/svg\" aria-label=\"Sapa mengangkat tangan dengan tenang, ikon bel memanggil petugas di sampingnya\" viewBox=\"-24 -6 248 206\" style=\"width:100%; height:100%\"><ellipse cx=\"100\" cy=\"193\" rx=\"58\" ry=\"5\" fill=\"#10302A\" opacity=\".12\"/><path d=\"M20 52 Q20 30 38 30 Q56 30 56 52 L60 62 H16 Z\" fill=\"#F0A162\"/><circle cx=\"38\" cy=\"68\" r=\"5\" fill=\"#F0A162\"/><path d=\"M8 40 l-6 -4 M68 40 l6 -4\" stroke=\"#F0A162\" stroke-width=\"4\" stroke-linecap=\"round\"/><path d=\"M40 150 Q26 164 30 180\" stroke=\"#1E9A6E\" stroke-width=\"14\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M160 148 Q186 140 188 116\" stroke=\"#1E9A6E\" stroke-width=\"14\" fill=\"none\" stroke-linecap=\"round\"/><circle cx=\"188\" cy=\"112\" r=\"9\" fill=\"#1E9A6E\"/><g transform=\"rotate(4 100 190)\"><path d=\"M38 190 V98 A62 62 0 0 1 162 98 V190 Z\" fill=\"#1E9A6E\"/><path d=\"M54 190 V102 A46 46 0 0 1 146 102 V190 Z\" fill=\"#A6D35A\"/><ellipse cx=\"82\" cy=\"110\" rx=\"9\" ry=\"11\" fill=\"#FBFBF8\"/><circle cx=\"82\" cy=\"111\" r=\"5.5\" fill=\"#10302A\"/><circle cx=\"84\" cy=\"109\" r=\"1.8\" fill=\"#FBFBF8\"/><ellipse cx=\"118\" cy=\"110\" rx=\"9\" ry=\"11\" fill=\"#FBFBF8\"/><circle cx=\"118\" cy=\"111\" r=\"5.5\" fill=\"#10302A\"/><circle cx=\"120\" cy=\"109\" r=\"1.8\" fill=\"#FBFBF8\"/><circle cx=\"68\" cy=\"130\" r=\"7\" fill=\"#F0A162\" opacity=\".75\"/><circle cx=\"132\" cy=\"130\" r=\"7\" fill=\"#F0A162\" opacity=\".75\"/><path d=\"M88 134 Q100 144 112 134\" stroke=\"#10302A\" stroke-width=\"5\" fill=\"none\" stroke-linecap=\"round\"/></g></svg>", "senang": "<svg xmlns=\"http://www.w3.org/2000/svg\" aria-label=\"Sapa mengangkat kedua tangan dengan gembira\" viewBox=\"-24 -6 248 206\" style=\"width:100%; height:100%\"><ellipse cx=\"100\" cy=\"193\" rx=\"58\" ry=\"5\" fill=\"#10302A\" opacity=\".12\"/><path d=\"M100 4 l3 8 8 1 -6 5 2 8 -7 -4 -7 4 2 -8 -6 -5 8 -1z\" fill=\"#F0A162\"/><path d=\"M40 136 Q20 116 26 92\" stroke=\"#1E9A6E\" stroke-width=\"14\" fill=\"none\" stroke-linecap=\"round\"/><circle cx=\"26\" cy=\"88\" r=\"9\" fill=\"#1E9A6E\"/><path d=\"M160 136 Q180 116 174 92\" stroke=\"#1E9A6E\" stroke-width=\"14\" fill=\"none\" stroke-linecap=\"round\"/><circle cx=\"174\" cy=\"88\" r=\"9\" fill=\"#1E9A6E\"/><g transform=\"rotate(0 100 190)\"><path d=\"M38 190 V98 A62 62 0 0 1 162 98 V190 Z\" fill=\"#1E9A6E\"/><path d=\"M54 190 V102 A46 46 0 0 1 146 102 V190 Z\" fill=\"#A6D35A\"/><path d=\"M72 112 Q82 100 92 112\" stroke=\"#10302A\" stroke-width=\"6\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M108 112 Q118 100 128 112\" stroke=\"#10302A\" stroke-width=\"6\" fill=\"none\" stroke-linecap=\"round\"/><circle cx=\"68\" cy=\"130\" r=\"7\" fill=\"#F0A162\" opacity=\".75\"/><circle cx=\"132\" cy=\"130\" r=\"7\" fill=\"#F0A162\" opacity=\".75\"/><path d=\"M86 132 Q100 152 114 132 Z\" fill=\"#10302A\"/><path d=\"M92 141 Q100 148 108 141\" fill=\"#F0A162\"/></g></svg>"};
+const NASKAH = [{"keadaan":"SAPA_IZIN","varian":"pertama","ucapan":"Selamat datang, Bapak/Ibu. Saya Sapa, pemandu pendaftaran. Data Bapak atau Ibu akan dipakai untuk pendaftaran hari ini. Boleh saya lanjutkan?","subtitle":"Boleh saya bantu daftar? Jawab: ya / tidak","ekspresi":"menyapa","tempo":0.85},{"keadaan":"SAPA_IZIN","varian":"diulang","ucapan":"Maaf, saya kurang dengar. Boleh saya lanjutkan? Cukup jawab ya, atau tidak.","subtitle":"Cukup jawab: ya / tidak","ekspresi":"mendengar","tempo":0.85},{"keadaan":"MINTA_KARTU","varian":"pertama","ucapan":"Terima kasih. Silakan letakkan kartu BPJS atau KTP di kotak yang menyala.","subtitle":"Letakkan kartu BPJS / KTP di kotak yang menyala","ekspresi":"memandu","tempo":0.9},{"keadaan":"MINTA_KARTU","varian":"gagal baca","ucapan":"Kartunya belum terbaca. Coba letakkan lagi, rata dengan kaca, ya.","subtitle":"Letakkan lagi kartunya, rata dengan kaca","ekspresi":"memandu","tempo":0.85},{"keadaan":"VERIFIKASI_WAJAH","varian":"awal","ucapan":"Terima kasih, Ibu. Sekarang lihat ke kamera di atas layar, ya.","subtitle":"Lihat ke kamera di atas layar","ekspresi":"memandu","tempo":0.9},{"keadaan":"VERIFIKASI_WAJAH","varian":"terang","ucapan":"Saya terangkan lampunya. Lihat ke kamera sekali lagi, ya.","subtitle":"Lampu diterangkan. Lihat ke kamera lagi","ekspresi":"memandu","tempo":0.85},{"keadaan":"VERIFIKASI_WAJAH","varian":"maju","ucapan":"Sedikit maju, Ibu. Ya, begitu. Tahan sebentar.","subtitle":"Sedikit maju… tahan sebentar","ekspresi":"memandu","tempo":0.85},{"keadaan":"VERIFIKASI_WAJAH","varian":"lepas penutup","ucapan":"Boleh masker atau topinya dilepas sebentar, Ibu?","subtitle":"Boleh lepas masker / topi sebentar?","ekspresi":"memandu","tempo":0.85},{"keadaan":"VERIFIKASI_WAJAH","varian":"ulang","ucapan":"Kita coba sekali lagi. Lihat lurus ke kamera, ya.","subtitle":"Coba lagi: lihat lurus ke kamera","ekspresi":"memandu","tempo":0.85},{"keadaan":"TANYA_KUNJUNGAN","varian":"pertama","ucapan":"Wajah sudah cocok, terima kasih. Hari ini Ibu mau kontrol, atau membawa rujukan baru?","subtitle":"Kontrol, atau bawa rujukan baru?","ekspresi":"mendengar","tempo":0.9},{"keadaan":"TANYA_KUNJUNGAN","varian":"diulang","ucapan":"Maaf, boleh diulang? Kontrol, atau rujukan baru?","subtitle":"Kontrol, atau rujukan baru?","ekspresi":"mendengar","tempo":0.85},{"keadaan":"SCAN_DOKUMEN","varian":"kontrol","ucapan":"Silakan letakkan surat kontrol di kotak yang menyala.","subtitle":"Letakkan surat kontrol di kotak yang menyala","ekspresi":"memandu","tempo":0.9},{"keadaan":"SCAN_DOKUMEN","varian":"rujukan baru","ucapan":"Silakan letakkan surat rujukan dari puskesmas atau klinik di kotak yang menyala.","subtitle":"Letakkan surat rujukan di kotak yang menyala","ekspresi":"memandu","tempo":0.9},{"keadaan":"SCAN_DOKUMEN","varian":"gagal baca","ucapan":"Suratnya belum terbaca. Coba letakkan lagi, tulisannya menghadap ke bawah, ya.","subtitle":"Letakkan lagi suratnya, tulisan menghadap kaca","ekspresi":"memandu","tempo":0.85},{"keadaan":"KONFIRMASI_DATA","varian":"pertama","ucapan":"Data kunjungan Ibu ada di layar. Sudah betul?","subtitle":"Data di layar sudah betul? Jawab: ya / tidak","ekspresi":"mendengar","tempo":0.9},{"keadaan":"KONFIRMASI_DATA","varian":"diulang","ucapan":"Maaf, saya kurang dengar. Data di layar sudah betul? Cukup jawab ya, atau tidak.","subtitle":"Data di layar sudah betul? Ya / tidak","ekspresi":"mendengar","tempo":0.85},{"keadaan":"MENUNGGU_PETUGAS_CEK","varian":"","ucapan":"Terima kasih. Petugas sedang memeriksa sebentar, ya.","subtitle":"Petugas sedang memeriksa sebentar…","ekspresi":"senang","tempo":0.9},{"keadaan":"MEMANGGIL_PETUGAS","varian":"izin ditolak","ucapan":"Baik, tidak apa-apa. Petugas akan membantu langsung, ya.","subtitle":"Petugas segera datang membantu","ekspresi":"petugas","tempo":0.85},{"keadaan":"MEMANGGIL_PETUGAS","varian":"diminta pasien","ucapan":"Baik. Petugas segera datang membantu.","subtitle":"Petugas segera datang membantu","ekspresi":"petugas","tempo":0.85},{"keadaan":"MEMANGGIL_PETUGAS","varian":"kartu tak terbaca","ucapan":"Kartunya belum terbaca. Tidak apa-apa, petugas segera datang membantu.","subtitle":"Petugas segera datang membantu","ekspresi":"petugas","tempo":0.85},{"keadaan":"MEMANGGIL_PETUGAS","varian":"peserta tidak aktif","ucapan":"Ada yang perlu dicek petugas. Mohon tunggu sebentar, ya.","subtitle":"Petugas segera datang membantu","ekspresi":"petugas","tempo":0.85},{"keadaan":"MEMANGGIL_PETUGAS","varian":"frista tidak cocok","ucapan":"Tidak apa-apa. Petugas segera datang untuk membantu verifikasi.","subtitle":"Petugas segera datang membantu","ekspresi":"petugas","tempo":0.85},{"keadaan":"MEMANGGIL_PETUGAS","varian":"frista wajah tak terdeteksi","ucapan":"Kameranya belum bisa membaca wajah. Tidak apa-apa, petugas segera datang.","subtitle":"Petugas segera datang membantu","ekspresi":"petugas","tempo":0.85},{"keadaan":"MEMANGGIL_PETUGAS","varian":"jawaban tidak jelas","ucapan":"Maaf, saya belum menangkap jawabannya. Petugas segera datang membantu.","subtitle":"Petugas segera datang membantu","ekspresi":"petugas","tempo":0.85},{"keadaan":"MEMANGGIL_PETUGAS","varian":"diam terlalu lama","ucapan":"Petugas segera datang membantu, ya.","subtitle":"Petugas segera datang membantu","ekspresi":"petugas","tempo":0.85},{"keadaan":"MEMANGGIL_PETUGAS","varian":"kebutuhan lain","ucapan":"Untuk keperluan itu, petugas akan membantu langsung.","subtitle":"Petugas segera datang membantu","ekspresi":"petugas","tempo":0.85},{"keadaan":"MEMANGGIL_PETUGAS","varian":"dokumen tak terbaca","ucapan":"Suratnya belum terbaca. Tidak apa-apa, petugas segera datang.","subtitle":"Petugas segera datang membantu","ekspresi":"petugas","tempo":0.85},{"keadaan":"MEMANGGIL_PETUGAS","varian":"data dikoreksi pasien","ucapan":"Terima kasih sudah memeriksa. Petugas akan membetulkan datanya bersama.","subtitle":"Petugas segera datang membantu","ekspresi":"petugas","tempo":0.85},{"keadaan":"MEMANGGIL_PETUGAS","varian":"layanan ai terputus","ucapan":"Maaf, sistem saya sedang lambat. Petugas segera datang membantu.","subtitle":"Petugas segera datang membantu","ekspresi":"petugas","tempo":0.85},{"keadaan":"MEMANGGIL_PETUGAS","varian":"kemungkinan darurat","ucapan":"Saya panggilkan petugas sekarang juga. Silakan duduk dulu, ya.","subtitle":"Petugas dipanggil SEKARANG. Silakan duduk dulu","ekspresi":"petugas","tempo":0.85},{"keadaan":"SELESAI","varian":"antrean dicetak","ucapan":"Ini nomor antrean Ibu. Semua keterangan ada di struk. Semoga lekas sehat.","subtitle":"Ambil struk antrean di bawah. Semoga lekas sehat!","ekspresi":"senang","tempo":0.9},{"keadaan":"SELESAI","varian":"dilayani petugas","ucapan":"Petugas sudah di sini. Semoga lekas sehat, Ibu.","subtitle":"Petugas sudah di sini. Semoga lekas sehat!","ekspresi":"senang","tempo":0.9}];
+
+const NAMA_KEADAAN = {
+  SAPA_IZIN: "Sapa & izin", MINTA_KARTU: "Minta kartu", VERIFIKASI_WAJAH: "Verifikasi wajah", TANYA_KUNJUNGAN: "Tanya kunjungan",
+  SCAN_DOKUMEN: "Scan dokumen", KONFIRMASI_DATA: "Konfirmasi data", MENUNGGU_PETUGAS_CEK: "Petugas memeriksa",
+  MEMANGGIL_PETUGAS: "Memanggil petugas", SELESAI: "Selesai",
+};
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+const fmt = (x) => x.toFixed(2).replace(".", ",");
+
+let si = 0, fi = 0, timer = null;
+
+$("hdrAva").innerHTML = AVATAR.menyapa;
+$("facts").innerHTML = [["9", "keadaan"], ["25/25", "uji lulus"], ["6.000", "alur acak diuji"], ["7", "skenario"], ["40", "ujaran evaluasi"]]
+  .map(([b, t]) => `<span class="fact"><b>${b}</b>${t}</span>`).join("");
+
+$("chips").innerHTML = SKENARIO.map((s, i) => `<button class="chip" type="button" data-i="${i}" aria-pressed="${i === 0}">${esc(s.judul)}</button>`).join("");
+$("chips").addEventListener("click", (e) => { const b = e.target.closest(".chip"); if (b) { pilih(+b.dataset.i); } });
+
+function pilih(i) { si = i; fi = 0; stop(); render(true); }
+
+function render(gantiSkenario) {
+  const s = SKENARIO[si], f = s.frames[fi];
+  document.querySelectorAll(".chip").forEach((c, i) => c.setAttribute("aria-pressed", String(i === si)));
+  if (gantiSkenario) {
+    $("scnText").textContent = s.ringkas;
+    $("scnRes").innerHTML = s.hasil === "antrean_dicetak" ? '<span class="pill ok">Hasil: antrean dicetak</span>' : '<span class="pill help">Hasil: dilayani petugas</span>';
+  }
+  // kiosk
+  const ava = $("kAva"); ava.innerHTML = AVATAR[f.ekspresi] || AVATAR.menyapa; ava.classList.remove("bump"); void ava.offsetWidth; ava.classList.add("bump");
+  $("kTag").textContent = f.keadaan;
+  $("kSub").textContent = f.subtitle;
+  const card = $("kCard");
+  if (f.kartu) {
+    card.innerHTML = `<h4>${esc(f.kartu.judul)}</h4>` + f.kartu.baris.map((b) => `<div class="k-row${b.ragu ? " ragu" : ""}"><span>${esc(b.label)}</span><span>${esc(b.nilai)}</span></div>`).join("");
+    card.hidden = false; $("kStage").classList.add("with-card");
+  } else { card.hidden = true; $("kStage").classList.remove("with-card"); }
+  $("kSpeak").textContent = "“" + f.ucapan + "”";
+  $("kMeta").textContent = `Diucapkan lewat speaker · tempo ${String(f.tempo).replace(".", ",")}× · pose “${f.ekspresi}”`;
+  // steps
+  $("steps").innerHTML = s.frames.map((x, i) => `<li class="step ${i < fi ? "done" : i === fi ? "now" : "future"}" tabindex="0" data-i="${i}"><span class="n">${i + 1}</span><span><span class="t">${esc(x.peristiwa)}</span><br><span class="tag mono">→ ${NAMA_KEADAAN[x.keadaan]}</span></span></li>`).join("");
+  const now = $("steps").querySelector(".now"); if (now) now.scrollIntoView({ block: "nearest" });
+  // brain
+  $("brain").innerHTML = otak(f);
+  $("fx").innerHTML = f.efek.length ? f.efek.map((e) => `<li class="${/SEGERA|eskalasi|panggil petugas|bendera/.test(e) ? "alert" : ""}">${esc(e)}</li>`).join("") : '<li>Menunggu pasien.</li>';
+  // controls
+  $("prev").disabled = fi === 0; $("next").disabled = fi === s.frames.length - 1;
+  $("counter").textContent = `Langkah ${fi + 1} dari ${s.frames.length}`;
+  document.querySelectorAll("#map .node").forEach((n) => n.classList.toggle("on", n.dataset.tag === f.keadaan || (f.keadaan === "SELESAI" && n.dataset.tag === "SELESAI_" + s.hasil)));
+}
+
+function meter(label, v, ambang, panas) {
+  return `<div class="meter"><span>${label}</span><span class="bar"><i class="${panas ? "hot" : ""}" style="width:${Math.round(v * 100)}%"></i>${ambang.map((a) => `<b style="left:${a * 100}%"></b>`).join("")}</span><span class="v">${fmt(v)}</span></div>`;
+}
+function otak(f) {
+  const j = f.jejak;
+  if (!j) return '<p class="quiet">Tidak ada jawaban lisan di langkah ini, jadi tidak ada AI yang dipanggil. Keputusan diambil oleh kode dari hasil perangkat.</p>';
+  let h = "";
+  if (j.jev && "galat" in j.jev) h += `<p class="verdict"><span class="err">Jev tak terjangkau</span> <span class="quiet">(${esc(j.jev.galat.split(":")[0])})</span></p>`;
+  else if (j.jev) {
+    h += `<p class="verdict">Jev memilih <b>${esc(j.jev.opsi.replace(/_/g, " "))}</b></p>`;
+    h += meter("Keyakinan", j.jev.keyakinan, [0.3, 0.6], false);
+    h += meter("Minta petugas", j.jev.pMintaPetugas, [0.7], j.jev.pMintaPetugas >= 0.7);
+    h += meter("Darurat", j.jev.pDarurat, [0.3], j.jev.pDarurat >= 0.3);
+  }
+  if (j.claude && "galat" in j.claude) h += `<p class="verdict"><span class="err">Claude tak terjangkau</span> <span class="quiet">(${esc(j.claude.galat.split(":")[0])})</span></p>`;
+  else if (j.claude) h += `<p class="verdict">Claude Haiku 5.5 memilih <b>${esc(j.claude.opsi.replace(/_/g, " "))}</b>${j.jev && !("galat" in j.jev) ? (j.claude.opsi === j.jev.opsi ? ", sama dengan Jev: diterima" : ", berbeda dari Jev: tanya ulang") : ""}</p>`;
+  else if (j.jev && !("galat" in j.jev)) h += '<p class="quiet">Claude tidak dipanggil: keyakinan Jev di luar pita 0,3–0,6.</p>';
+  if (j.kataKunci) h += `<p class="verdict">Mode kata kunci: <b>${esc(j.kataKunci.opsi.replace(/_/g, " "))}</b>${j.kataKunci.opsi === "tidak_jelas" ? " → tanya ulang" : " → diterima, ditandai di audit"}</p>`;
+  return h;
+}
+
+function maju() { const s = SKENARIO[si]; if (fi < s.frames.length - 1) { fi++; render(false); return true; } return false; }
+function mundur() { if (fi > 0) { fi--; render(false); } }
+function stop() { if (timer) { clearInterval(timer); timer = null; } $("play").setAttribute("aria-pressed", "false"); $("play").textContent = "Putar otomatis"; }
+$("next").addEventListener("click", () => { stop(); maju(); });
+$("prev").addEventListener("click", () => { stop(); mundur(); });
+$("play").addEventListener("click", () => {
+  if (timer) return stop();
+  if (fi === SKENARIO[si].frames.length - 1) { fi = 0; render(false); }
+  $("play").setAttribute("aria-pressed", "true"); $("play").textContent = "Jeda";
+  timer = setInterval(() => { if (!maju()) stop(); }, 2400);
+});
+$("steps").addEventListener("click", (e) => { const li = e.target.closest(".step"); if (li) { stop(); fi = +li.dataset.i; render(false); } });
+$("steps").addEventListener("keydown", (e) => { if (e.key === "Enter") { const li = e.target.closest(".step"); if (li) { stop(); fi = +li.dataset.i; render(false); } } });
+document.addEventListener("keydown", (e) => { if (e.target.closest("input,textarea")) return; if (e.key === "ArrowRight") { stop(); maju(); } if (e.key === "ArrowLeft") { stop(); mundur(); } });
+
+// peta alur
+(function peta() {
+  const utama = [
+    ["SAPA_IZIN", "Sapa & izin", "tanya ulang 1×"], ["MINTA_KARTU", "Minta kartu", "baca ulang 1×"], ["VERIFIKASI_WAJAH", "Verifikasi wajah", "pandu ≤ 2×"],
+    ["TANYA_KUNJUNGAN", "Tanya kunjungan", "tanya ulang 1×"], ["SCAN_DOKUMEN", "Scan dokumen", "baca ulang 1×"], ["KONFIRMASI_DATA", "Konfirmasi data", "tanya ulang 1×"],
+    ["MENUNGGU_PETUGAS_CEK", "Petugas cek", "setuju / ambil alih"], ["SELESAI_antrean_dicetak", "Selesai", "antrean dicetak"],
+  ];
+  const W = 1100, bw = 118, bh = 54, gap = (W - 20 - utama.length * bw) / (utama.length - 1), y1 = 40, y2 = 230;
+  let g = "", x = (i) => 10 + i * (bw + gap);
+  utama.forEach(([tag, nama, sub], i) => {
+    if (i < utama.length - 1) g += `<path class="edge" d="M${x(i) + bw} ${y1 + bh / 2} H${x(i + 1) - 6}" marker-end="url(#ah)"/>`;
+    if (i < 7) g += `<path class="edge esc" d="M${x(i) + bw / 2} ${y1 + bh} V${y2 - 6}" marker-end="url(#ahw)"/>`;
+    g += `<g class="node" data-tag="${tag}"><rect x="${x(i)}" y="${y1}" width="${bw}" height="${bh}" rx="12"/><text x="${x(i) + bw / 2}" y="${y1 + 23}" text-anchor="middle">${nama}</text><text class="sub" x="${x(i) + bw / 2}" y="${y1 + 41}" text-anchor="middle">${sub}</text></g>`;
+  });
+  const px = x(0), pw = x(6) + bw - x(0);
+  g += `<g class="node help" data-tag="MEMANGGIL_PETUGAS"><rect x="${px}" y="${y2}" width="${pw}" height="${bh}" rx="12"/><text x="${px + pw / 2}" y="${y2 + 23}" text-anchor="middle">Memanggil petugas</text><text class="sub" x="${px + pw / 2}" y="${y2 + 41}" text-anchor="middle">14 alasan tertutup, tercatat di audit · darurat = prioritas segera · draf data ikut dikirim</text></g>`;
+  g += `<path class="edge" d="M${px + pw} ${y2 + bh / 2} H${x(7) - 6}" marker-end="url(#ah)"/>`;
+  g += `<g class="node" data-tag="SELESAI_dilayani_petugas"><rect x="${x(7)}" y="${y2}" width="${bw}" height="${bh}" rx="12"/><text x="${x(7) + bw / 2}" y="${y2 + 23}" text-anchor="middle">Selesai</text><text class="sub" x="${x(7) + bw / 2}" y="${y2 + 41}" text-anchor="middle">dilayani petugas</text></g>`;
+  g += `<text class="loop" x="${x(0)}" y="${y1 + bh + 34}">tolak izin, tidak jelas 2×,</text><text class="loop" x="${x(0)}" y="${y1 + bh + 48}">minta petugas, darurat</text>`;
+  g += `<text class="loop" x="${x(2) + bw / 2 + 8}" y="${y1 + bh + 34}">tidak cocok 2×,</text><text class="loop" x="${x(2) + bw / 2 + 8}" y="${y1 + bh + 48}">tak terdeteksi 3×</text>`;
+  g += `<text class="loop" x="${x(5) + bw / 2 + 8}" y="${y1 + bh + 34}">pasien bilang</text><text class="loop" x="${x(5) + bw / 2 + 8}" y="${y1 + bh + 48}">data salah</text>`;
+  $("map").innerHTML = `<svg viewBox="0 0 ${W} ${y2 + bh + 14}" role="img" aria-label="Peta alur Sapa: delapan langkah pendaftaran mandiri dengan jalan keluar ke petugas dari setiap langkah"><defs>
+    <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--brand-2)"/></marker>
+    <marker id="ahw" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--warn)"/></marker></defs>${g}</svg>`;
+})();
+
+// naskah
+$("naskah").innerHTML = NASKAH.map((n) => `<tr><td><b>${NAMA_KEADAAN[n.keadaan]}</b>${n.varian ? `<br><span class="quiet">${esc(n.varian)}</span>` : ""}</td><td><div class="pose" title="${n.ekspresi}">${AVATAR[n.ekspresi]}</div></td><td>${esc(n.ucapan)}</td><td>${esc(n.subtitle)}</td></tr>`).join("");
+
+render(true);
+</script>
